@@ -1,0 +1,94 @@
+import { Response } from "express";
+import JWTRequest from "../types/JWTRequest";
+import { db } from "../database/database";
+import { NotFound } from "../exceptions/NotFound";
+import { SubgedditModel } from "../models/Subgeddit";
+
+
+export async function createSubgeddit(req: JWTRequest, res: Response)
+{
+    try 
+    {
+        const name = req.body.name
+        const avatar = req.body.avatar
+        const profile = await db.getProfile([req.user?.userID]);
+        await db.insertSubgeddit([name, avatar, profile.id]);     
+    } 
+    catch (error) 
+    {
+        res.status(500).send({message: "Internal Server Error."})
+        console.log(error)
+        return;
+    }
+
+    res.status(201).send({message: "Subgeddit created successfully."});
+}
+
+export async function updateSubgeddit(req: JWTRequest, res: Response)
+{
+    try 
+    {
+        const subgedditID = req.params.id;
+        const name = req.body.name;
+        const avatar = req.body.avatar;
+        const profile = await db.getProfile([req.user?.userID])
+        await db.updateSubgeddit({id: subgedditID, name: name, avatar: avatar, profileID: profile.id});
+    }
+    catch (error) 
+    {
+        console.log(error);
+        if (error instanceof NotFound)
+        {
+            res.status(404).send({message: "Subgeddit Not Found"});
+        }
+        else
+        {
+            res.status(500).send({message: "Internal Server Error"})
+        }
+        return;
+    }
+
+    res.status(200).send({message: "Subgeddit updated successfully"})
+}
+
+export async function listSubgeddit(req: JWTRequest, res: Response)
+{
+    let subgeddits: SubgedditModel[] = [];
+    
+    try 
+    {
+        subgeddits = await db.listSubgeddit([]);
+    } 
+    catch (error) 
+    {
+        res.status(500).send({message: "Internal Server Error"})
+        return;
+    }
+
+    res.status(200).json(subgeddits)
+}
+
+
+export async function deleteSubgeddit(req: JWTRequest, res: Response)
+{
+    try 
+    {
+        const subgedditID = req.params.id
+        const profile = await db.getProfile([req.user?.userID])
+        await db.deleteSubgeddit([subgedditID, profile.id]);
+    } 
+    catch (error) 
+    {
+        console.log(error)
+        if (error instanceof NotFound)
+        {
+            res.status(404).send({message: "Subgeddit Not Found"})
+        }
+        else
+        {
+            res.status(500).send({message: "Internal Server Error"})
+        }
+        return
+    }
+    res.status(200).send({message: "Subgeddit deleted successfully"})
+}
