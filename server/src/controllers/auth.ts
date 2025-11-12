@@ -67,6 +67,13 @@ export async function register(req: Request, res: Response)
     {
         const username = req.body.username
         const password = req.body.password
+        const passwordConfirm = req.body.password_confirm
+
+        if (password != passwordConfirm)
+        {
+            res.status(400).send({message: "Passwords do not match!"});
+            return;
+        }
 
         // Dar hash à password.
         const hashedPassword = await bcrypt.hash(password, SALT);
