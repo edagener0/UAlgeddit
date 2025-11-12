@@ -1,12 +1,7 @@
 import * as sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
-import { UserModel } from '../models/User';
-import { SubgedditModel } from '../models/Subgeddit';
-import { ProfileModel } from '../models/Profile';
 import { NotFound } from '../exceptions/NotFound';
-import { PostModel } from '../models/Post';
-import { Comment } from '../models/Comment';
-import { FriendshipRequest } from '../models/FriendshipRequest';
+
 
 class DatabaseHelper {
   private db: Database;
@@ -29,7 +24,7 @@ class DatabaseHelper {
     return await this.executeQuery(query, params);
   }
 
-  public async getSubgeddit(params: any[]): Promise<SubgedditModel>
+  public async getSubgeddit(params: any[]): Promise<any>
   {
     const query = "select * from subgeddit where id = ?"
     const response = await this.executeQuery(query, params);
@@ -37,7 +32,7 @@ class DatabaseHelper {
     {
       throw new NotFound("Subgeddit Not Found");
     }
-    return response[0] as SubgedditModel
+    return response[0]
   }
 
   public async updateSubgeddit(params: any): Promise<any>
@@ -84,11 +79,13 @@ class DatabaseHelper {
     return changes;
   }
 
-  public async listSubgeddit(params: any[]): Promise<SubgedditModel[]>
+  public async listSubgeddit(params: any[]): Promise<any>
   {
-    const query = `select * from subgeddit`
+    const query = `select subgeddit.id as subgeddit_id, subgeddit.name, subgeddit.avatar as image, user.username as owner, profile.id as owner_profile_id
+    from subgeddit, profile, user 
+    where profile.id = user.id and subgeddit.profile_id = profile.id `
     const response = await this.executeQuery(query, params)
-    return response as SubgedditModel[]
+    return response
   }
 
   public async insertPost(params: any[]): Promise<any>
@@ -97,7 +94,7 @@ class DatabaseHelper {
     return await this.executeQuery(query, params);
   }
 
-  public async getPost(params: any[]): Promise<PostModel>
+  public async getPost(params: any[]): Promise<any>
   {
     const query = `select * from post where id = ?`
     const response = await this.executeQuery(query, params)
@@ -105,14 +102,28 @@ class DatabaseHelper {
     {
       throw new NotFound("Post not found.")
     }
-    return response[0] as PostModel
+    return response[0]
   }
 
-  public async listPost(params: any[]): Promise<PostModel[]>
+  public async listPostForSubgeddit(params: any[]): Promise<any>
   {
-    const query = `select * from post`
+    const query = `select post.id as post_id, user.username, profile.id as user_profile_id, subgeddit_id, subgeddit.name as subgeddit_name, post.title,
+    (select count(*) from vote where vote.num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.num = 1 and post_id = post.id) as upvotes
+    from post, profile, user, subgeddit where post.profile_id = profile.id and profile.id = user.id and 
+    post.subgeddit_id = subgeddit.id and subgeddit.id = ?`;
+    const response = await this.executeQuery(query, params)
+
+    return response;
+  }
+
+  public async listPost(params: any[]): Promise<any>
+  {
+    const query = `select post.id as post_id, user.username, profile.id as user_profile_id, subgeddit_id, subgeddit.name as subgeddit_name, post.title,
+    (select count(*) from vote where vote.num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.num = 1 and post_id = post.id) as upvotes
+    from post, profile, user, subgeddit where post.profile_id = profile.id and profile.id = user.id and 
+    post.subgeddit_id = subgeddit.id`
     const response = await this.executeQuery(query, params);
-    return response as PostModel[];
+    return response;
   }
 
   public async deletePost(params: any[]): Promise<any>
@@ -176,11 +187,11 @@ class DatabaseHelper {
     return changes
   }
 
-  public async listComment(params: any[]): Promise<Comment[]>
+  public async listComment(params: any[]): Promise<any>
   {
     const query = `select * from comment where post_id = ?`;
     const response = await this.executeQuery(query, params);
-    return response as Comment[];
+    return response;
   }
 
   public async createFriendshipRequest(params: any[]): Promise<any>
@@ -190,7 +201,7 @@ class DatabaseHelper {
     return await this.executeQuery(query, params);
   }
 
-  public async listReceivedFriendshipRequest(params: any[]): Promise<FriendshipRequest[]>
+  public async listReceivedFriendshipRequest(params: any[]): Promise<any>
   {
     const query = `select * from friend_request where to_profile_id = ?`
     return await this.executeQuery(query, params);
@@ -199,7 +210,7 @@ class DatabaseHelper {
   public async acceptFriendshipRequest(params: any[]): Promise<any>
   {
     const query1 = `select * from friend_request where from_profile_id = ? and to_profile_id = ?`
-    const friendRequests: FriendshipRequest[] = await this.executeQuery(query1, params)
+    const friendRequests = await this.executeQuery(query1, params)
     if (friendRequests.length === 0)
     {
       throw new NotFound("Friend Request not found.");
@@ -235,14 +246,14 @@ class DatabaseHelper {
     return changes;
   }
 
-  public async getUser(params: any[]): Promise<UserModel>
+  public async getUser(params: any[]): Promise<any>
   {
     const query = "select * from user where username= ?";
     const response = await this.executeQuery(query, params);
-    return response[0] as UserModel
+    return response[0]
   }
 
-  public async getProfile(params: any[]): Promise<ProfileModel>
+  public async getProfile(params: any[]): Promise<any>
   {
     const query = "select * from profile where user_id = ?"
     const response = await this.executeQuery(query, params)
@@ -250,7 +261,7 @@ class DatabaseHelper {
     {
       throw new NotFound("Profile not found.")
     }
-    return response[0] as ProfileModel
+    return response[0]
   }
 
   public close(): void {

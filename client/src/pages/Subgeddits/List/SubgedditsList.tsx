@@ -1,0 +1,38 @@
+import { useEffect, useState } from "react";
+import SubgedditCard from "../../../components/SubgedditCard/SubgedditCard"
+import "./SubgedditsList.css"
+import { SUBGEDDIT_LIST } from "../../../utils/Constants";
+import type SubgedditInterface from "./SubgedditListInterface";
+
+export default function SubgedditsList({token}: {token: string | null})
+{
+const [subgeddits, setSubgeddits] = useState<SubgedditInterface[]>([]);
+
+    const fetchSubgeddits = async () => {
+        
+        const response = await fetch(`${SUBGEDDIT_LIST}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            }
+        )
+
+        const data = await response.json();
+        setSubgeddits(data);
+    }
+
+    useEffect(() => {
+        fetchSubgeddits();
+    }, [])
+
+    return (
+        <div id="subgeddits-container">
+            {subgeddits.map((subgeddit, index) => {
+                return <SubgedditCard subgeddit={subgeddit} key={index}/>
+            })}
+        </div>
+    )
+}

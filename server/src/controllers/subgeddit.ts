@@ -2,7 +2,6 @@ import { Response } from "express";
 import JWTRequest from "../types/JWTRequest";
 import { db } from "../database/database";
 import { NotFound } from "../exceptions/NotFound";
-import { SubgedditModel } from "../models/Subgeddit";
 
 
 export async function createSubgeddit(req: JWTRequest, res: Response)
@@ -53,7 +52,7 @@ export async function updateSubgeddit(req: JWTRequest, res: Response)
 
 export async function listSubgeddit(req: JWTRequest, res: Response)
 {
-    let subgeddits: SubgedditModel[] = [];
+    let subgeddits = [];
     
     try 
     {
@@ -61,6 +60,7 @@ export async function listSubgeddit(req: JWTRequest, res: Response)
     } 
     catch (error) 
     {
+        console.log(error)
         res.status(500).send({message: "Internal Server Error"})
         return;
     }
@@ -68,6 +68,21 @@ export async function listSubgeddit(req: JWTRequest, res: Response)
     res.status(200).json(subgeddits)
 }
 
+export async function detailSubgeddit(req: JWTRequest, res: Response)
+{
+    
+    try 
+    {
+        const subgedditID = req.params.id;
+        const posts = await db.listPostForSubgeddit([subgedditID]);
+        res.status(200).json(posts);
+    }
+    catch (error) 
+    {
+        console.log(error);
+        res.status(500).send({message: "Internal Server Error"});    
+    }
+}
 
 export async function deleteSubgeddit(req: JWTRequest, res: Response)
 {

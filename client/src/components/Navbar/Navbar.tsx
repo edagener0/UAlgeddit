@@ -9,6 +9,7 @@ export default function Navbar({token}: {token: string | null})
                 <NavItem href="/" label="Home"/>
                 {token ? (
                     <>
+                        <NavItem href="/subgeddits" label="Discover"/>
                         <NavItem href="/posts" label="Posts"/>
                         <NavItem href="/auth/logout" label="Logout"/>
                     </>

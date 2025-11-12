@@ -1,0 +1,31 @@
+.subgeddit-card {
+    background-color: rgb(101, 101, 170);
+    border-radius: 10px;
+}
+.subgeddit-body {
+    background-color: rgb(71, 72, 152);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.subgeddit-body:hover {
+    opacity: 0.5;
+}
+
+.subgeddit-footer {
+    background-color: rgb(70, 110, 132);
+    margin: 2%;
+    text-align: center;
+}
+
+.subgeddit-avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
