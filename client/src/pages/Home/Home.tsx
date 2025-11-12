@@ -1,6 +1,8 @@
 export default function HomePage()
 {
     return (
-        <div>hello world</div>
+        <div>
+            <h1>UAlgeddit</h1>
+        </div>
     )
 }

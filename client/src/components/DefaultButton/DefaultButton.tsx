@@ -1,6 +1,6 @@
 import "./DefaultButton.css"
 
-export default function Button({label, onclick}: {label?: string, onclick?: () => any})
+export default function Button({label, onclick, type}: {label?: string, onclick?: () => any, type?: string})
 {
     return (
         <button className="default-button" onClick={onclick}>
