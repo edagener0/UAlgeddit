@@ -5,9 +5,12 @@ import Login from './pages/Auth/Login/Login'
 import Navbar from './components/Navbar/Navbar'
 import "./index.css"
 import PrivateRoutes from './utils/PrivateRoutes'
-import ListPosts from './pages/Posts/Posts'
+import ListPosts from './pages/Posts/List/PostsList'
 import Logout from './components/Logout/Logout'
 import { useState } from 'react'
+import PostDetail from './pages/Posts/Detail/PostDetail'
+import SubgedditsList from './pages/Subgeddits/List/SubgedditsList'
+import SubgedditsDetail from './pages/Subgeddits/Detail/SubgedditsDetail'
 
 function App() {
   // TODO FIX: if token expires app will most likely break
@@ -29,8 +32,11 @@ function App() {
     <BrowserRouter>
       <Navbar token={token}/>
       <Routes>
-        <Route element={<PrivateRoutes token={token}/>}>
-          <Route path="/posts" element={<ListPosts/>}/>
+        <Route element={<PrivateRoutes token={token} setToken={setToken}/>}>
+          <Route path="/posts" element={<ListPosts token={token}/>}/>
+          <Route path="/posts/:id" element={<PostDetail token={token}/>}/>
+          <Route path="/subgeddits" element={<SubgedditsList token={token}/>}/>
+          <Route path="/subgeddits/:id" element={<SubgedditsDetail token={token}/>}/>
           <Route path="/auth/logout" element={<Logout logout={logout}/>}/>
         </Route>
         <Route path="/" element={<HomePage/>}/>

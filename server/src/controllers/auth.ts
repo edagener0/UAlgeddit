@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { SALT, SECRET_KEY } from "../constants/auth";
 import { db } from "../database/database";
-import { UserModel } from "../models/User";
 import JWTRequest from "../types/JWTRequest";
 
 
