@@ -12,9 +12,8 @@ export async function createComment(req: JWTRequest, res: Response)
 
         // verificar se o post e o perfil existem
         const post = await db.getPost([postID]);
-        const profile = await db.getProfile([req.user?.userID]);
 
-        await db.createComment([content, post.id, profile.id])
+        await db.createComment([content, post.id, req.user?.userID])
         res.status(201).send({message: "Comment created successfully"})
     } 
     catch (error) 
@@ -36,8 +35,7 @@ export async function deleteComment(req: JWTRequest, res: Response)
     try 
     {
         const commentID = req.params.id
-        const profile = await db.getProfile([req.user?.userID]);
-        await db.deleteComment([commentID, profile.id])
+        await db.deleteComment([commentID, req.user?.userID])
         res.status(200).send({message: "Comment deleted successfully"})
     } 
     catch (error) 

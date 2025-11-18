@@ -4,7 +4,7 @@ import {
     Navigate
 } from "react-router-dom"
 
-const PrivateRoutes = ({token, setToken}: {token: string | null, setToken: React.Dispatch<React.SetStateAction<string | null>>}) => {
+const PrivateRoutes = ({token, logout}: {token: string | null, logout: () => void}) => {
     if (!token)
     {
         return <Navigate to="/login"/>
@@ -15,13 +15,13 @@ const PrivateRoutes = ({token, setToken}: {token: string | null, setToken: React
         const {exp} = jwtDecode(token);
         if (!exp || Date.now() >= exp * 1000)
         {
-            setToken(null);
+            logout();
             return <Navigate to="/login"/>
         }
     } 
     catch (error) 
     {
-        setToken(null);
+        logout();
         return <Navigate to="/login"/>
     }
     return <Outlet/>

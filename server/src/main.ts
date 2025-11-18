@@ -1,9 +1,9 @@
 import express from "express";
 import authRouter from "./routes/auth";
-import subgedditRouter from "./routes/subgeddit";
 import postsRouter from "./routes/posts";
 import commentsRouter from "./routes/comments";
 import friendsRouter from "./routes/friends";
+import subgedditRouter from "./routes/subgeddit";
 
 const cors = require("cors");
 
@@ -20,10 +20,10 @@ app.use(cors(corsOptions))
 
 
 app.use("/auth", authRouter);
-app.use("/subgeddit", subgedditRouter);
 app.use("/post", postsRouter);
 app.use("/comment", commentsRouter);
 app.use("/friend", friendsRouter);
+app.use("/subgeddit", subgedditRouter)
 
 app.get("/", (req, res) => {
   res.send("UAlgeddit server is running!");

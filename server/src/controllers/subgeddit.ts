@@ -9,9 +9,7 @@ export async function createSubgeddit(req: JWTRequest, res: Response)
     try 
     {
         const name = req.body.name
-        const avatar = req.body.avatar
-        const profile = await db.getProfile([req.user?.userID]);
-        await db.insertSubgeddit([name, avatar, profile.id]);     
+        await db.insertSubgeddit([name, req.user?.userID]);     
     } 
     catch (error) 
     {
@@ -29,9 +27,7 @@ export async function updateSubgeddit(req: JWTRequest, res: Response)
     {
         const subgedditID = req.params.id;
         const name = req.body.name;
-        const avatar = req.body.avatar;
-        const profile = await db.getProfile([req.user?.userID])
-        await db.updateSubgeddit({id: subgedditID, name: name, avatar: avatar, profileID: profile.id});
+        await db.updateSubgeddit({id: subgedditID, name: name, userID: req.user?.userID});
     }
     catch (error) 
     {
@@ -89,8 +85,7 @@ export async function deleteSubgeddit(req: JWTRequest, res: Response)
     try 
     {
         const subgedditID = req.params.id
-        const profile = await db.getProfile([req.user?.userID])
-        await db.deleteSubgeddit([subgedditID, profile.id]);
+        await db.deleteSubgeddit([subgedditID, req.user?.userID]);
     } 
     catch (error) 
     {

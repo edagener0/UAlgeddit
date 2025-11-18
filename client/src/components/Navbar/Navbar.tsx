@@ -1,3 +1,4 @@
+import NavDropMenu from "../NavDropMenu/NavDropMenu"
 import "./Navbar.css"
 import NavItem from "./NavItem/NavItem"
 import NavMenu from "./NavMenu/NavMenu"
@@ -9,7 +10,10 @@ export default function Navbar({token}: {token: string | null})
                 <NavItem href="/" label="Home"/>
                 {token ? (
                     <>
-                        <NavItem href="/subgeddits" label="Discover"/>
+                        <NavDropMenu label="Subgeddits">
+                            <NavItem href="/subgeddits" label="Discover"/>
+                            <NavItem href="/subgeddits/create" label="Create"/>
+                        </NavDropMenu>
                         <NavItem href="/posts" label="Posts"/>
                         <NavItem href="/auth/logout" label="Logout"/>
                     </>

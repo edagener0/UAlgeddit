@@ -1,12 +1,9 @@
 export interface PostDetailI {
-    post_id: number;
+    id: number;
     title: string;
     content: string;
-    image: string;
+    subgeddit_id: number;
+    user_id: number;
     upvotes: number;
     downvotes: number;
-    subgeddit_id: number;
-    subgeddit_name: string;
-    profile_id: number;
-    profile_name: string;
 }

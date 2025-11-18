@@ -10,7 +10,7 @@ postsRouter.post("/delete/:id", jwtAuthMiddleware, async (req, res) => await del
 
 postsRouter.get("/list", jwtAuthMiddleware, async (req, res) => await listPost(req, res))
 
-postsRouter.get("/detail/:id", jwtAuthMiddleware, async (req, res) => await detailPost(req, res))
+postsRouter.post("/detail/:id", jwtAuthMiddleware, async (req, res) => await detailPost(req, res))
 
 postsRouter.post("/upvote/:id", jwtAuthMiddleware, async (req, res) => await upvotePost(req, res))
 
