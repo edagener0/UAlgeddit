@@ -9,9 +9,9 @@ export default function PostCard({post}: {post: PostListI})
                 <Link className="post-card-header" to={`/posts/${post.post_id}`}>
                     <h1 className="post-card-title">Post: {post.title}</h1>
                 </Link>
-                <div className="post-card-body">
+                <Link className="post-card-body" to={`/subgeddits/${post.subgeddit_id}`}>
                     <h4 className="post-card-subgeddit">Subgeddit: {post.subgeddit_name}</h4>
-                </div>
+                </Link>
                 <div className="post-card-footer">
                     <h4 className="post-card-author">Author: {post.username}</h4>
                 </div>

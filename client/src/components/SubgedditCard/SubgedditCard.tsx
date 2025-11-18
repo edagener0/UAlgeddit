@@ -7,11 +7,13 @@ export default function SubgedditCard({subgeddit}:  {subgeddit: SubgedditInterfa
     return (
     <div className="subgeddit-card">
         <Link className="subgeddit-body" to={`/subgeddits/${subgeddit.subgeddit_id}`}>
-            <img className="subgeddit-avatar" src={subgeddit.image} alt={subgeddit.name} />
             <h1>{subgeddit.name}</h1>
         </Link>
         <div className="subgeddit-footer">
             <h3>Owner: {subgeddit.owner}</h3>
+        </div>
+        <div className="subgeddit-create-post-wrapper">
+            <Link className="subgeddit-create-link" to={`/subgeddits/${subgeddit.subgeddit_id}/post/create`}>Create Post</Link>
         </div>
     </div>
     )

@@ -11,10 +11,11 @@ import { useState } from 'react'
 import PostDetail from './pages/Posts/Detail/PostDetail'
 import SubgedditsList from './pages/Subgeddits/List/SubgedditsList'
 import SubgedditsDetail from './pages/Subgeddits/Detail/SubgedditsDetail'
+import { getUserFromToken } from './utils/User'
+import SubgedditsCreate from './pages/Subgeddits/Create/SubgedditsCreate'
+import PostsCreate from './pages/Posts/Create/PostCreate'
 
 function App() {
-  // TODO FIX: if token expires app will most likely break
-
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   const login = (newToken: string) => {
@@ -27,16 +28,21 @@ function App() {
     setToken(null);
   };
 
+  const currentUserID = getUserFromToken(token);
+
   return (
     
     <BrowserRouter>
       <Navbar token={token}/>
       <Routes>
-        <Route element={<PrivateRoutes token={token} setToken={setToken}/>}>
+        <Route element={<PrivateRoutes token={token} logout={logout}/>}>
           <Route path="/posts" element={<ListPosts token={token}/>}/>
-          <Route path="/posts/:id" element={<PostDetail token={token}/>}/>
+          <Route path="/posts/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
+          <Route path="/posts/:id" element={<PostDetail token={token} currentUserID={currentUserID}/>}/>
           <Route path="/subgeddits" element={<SubgedditsList token={token}/>}/>
+          <Route path="/subgeddits/create" element={<SubgedditsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/subgeddits/:id" element={<SubgedditsDetail token={token}/>}/>
+          <Route path="/subgeddits/:subgedditID/post/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/auth/logout" element={<Logout logout={logout}/>}/>
         </Route>
         <Route path="/" element={<HomePage/>}/>

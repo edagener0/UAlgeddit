@@ -29,7 +29,7 @@ export default function Register({token}: {token: string | null})
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({username, password}),
+                body: JSON.stringify({username: username, password: password, password_confirm: passwordConfirm}),
             }
         )
 

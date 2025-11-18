@@ -15,9 +15,17 @@ export const POST_LIST = `${POST_URL}/list`
 
 export const POST_DETAIL = `${POST_URL}/detail`
 
+export const POST_CREATE = `${POST_URL}/create`
+
+export const POST_UPVOTE = `${POST_URL}/upvote`
+
+export const POST_DOWNVOTE = `${POST_URL}/downvote`
+
+export const POST_UNVOTE = `${POST_URL}/unvote`
 
 const SUBGEDDIT_URL = `${URL}/subgeddit`
 
+export const SUBGEDDIT_CREATE = `${SUBGEDDIT_URL}/create`
 export const SUBGEDDIT_LIST = `${SUBGEDDIT_URL}/list`
 
 export const SUBGEDDIT_DETAIL = `${SUBGEDDIT_URL}/detail`
