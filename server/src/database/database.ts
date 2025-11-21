@@ -114,7 +114,7 @@ class DatabaseHelper {
   {
     const query = `select post.id as post_id, user.username, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
     (select count(*) from vote where vote.vote_num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.vote_num = 1 and post_id = post.id) as upvotes
-    from post, user, subgeddit where post.user_id = user.id and user.id = subgeddit.user_id and subgeddit.id = ?`;
+    from post, user, subgeddit where post.user_id = user.id and post.subgeddit_id = subgeddit.id and post.subgeddit_id = ?`;
     const response = await this.executeQuery(query, params)
 
     return response;
@@ -124,7 +124,7 @@ class DatabaseHelper {
   {
     const query = `select post.id as post_id, user.username, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
     (select count(*) from vote where vote.vote_num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.vote_num = 1 and post_id = post.id) as upvotes
-    from post, user, subgeddit where post.user_id = user.id and user.id = subgeddit.user_id`
+    from post, user, subgeddit where post.user_id = user.id and post.subgeddit_id = subgeddit.id`
     const response = await this.executeQuery(query, params);
     return response;
   }
@@ -192,7 +192,7 @@ class DatabaseHelper {
 
   public async listComment(params: any[]): Promise<any>
   {
-    const query = `select * from comment where post_id = ?`;
+    const query = `select comment.id, comment.content, comment.post_id, comment.user_id, user.username from comment, user where comment.user_id = user.id and post_id = ?`;
     const response = await this.executeQuery(query, params);
     return response;
   }

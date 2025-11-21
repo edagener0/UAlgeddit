@@ -8,6 +8,7 @@ import Form from "../../../components/Form/Form";
 import Success from "../../../components/Messages/Success/Success";
 import Error from "../../../components/Messages/Error/Error";
 import { useParams } from "react-router-dom";
+import TextField from "../../../components/TextField/TextField";
 
 export default function PostsCreate({token, currentUserID}: {token: string | null; currentUserID: number | null;}) 
 {
@@ -45,12 +46,12 @@ export default function PostsCreate({token, currentUserID}: {token: string | nul
   };
 
   return (
-    <div id="create-subgeddit-container">
+    <div id="create-post-container">
       <h1>Create a Post!</h1>
       <Success success={success} />
       <Error error={error} />
       <Form
-        id="subgeddit-form"
+        id="post-form"
         action={POST_CREATE}
         method="POST"
         onSubmit={handleCreation}
@@ -61,7 +62,7 @@ export default function PostsCreate({token, currentUserID}: {token: string | nul
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <Input
+        <TextField
           name="content"
           placeholder="Content"
           value={content}

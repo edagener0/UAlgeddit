@@ -3,7 +3,6 @@ import PostCard from "../../../components/PostCard/PostCard"
 import { POST_LIST } from "../../../utils/Constants"
 import "./PostsList.css"
 import type PostListI from "./PostListInterface";
-import { Link } from "react-router-dom";
 
 export default function ListPosts({token}: {token: string | null})
 {

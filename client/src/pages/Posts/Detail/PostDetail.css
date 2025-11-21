@@ -11,8 +11,27 @@
 #content {
     background-color: rgb(104, 149, 173);
     font-size: 18px;
+    white-space: pre-line;
 }
 
+#comments-display {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+#comment-display-title {
+    text-align: center;
+}
+
+#comment-create-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5%;
+    gap: 1rem;
+}
 #stats {
     display: flex;
     justify-content: center;
@@ -22,6 +41,11 @@
     text-align: center;
 }
 
+#actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 #messages {
     background-color: rgb(106, 174, 163);
     text-align: center;

@@ -8,10 +8,11 @@ export async function createComment(req: JWTRequest, res: Response)
     try 
     {
         const content = req.body.content;
+        if (content.trim() == "") throw new Error("You can't create empty comments.")
         const postID = req.body.post_id;
 
         // verificar se o post e o perfil existem
-        const post = await db.getPost([postID]);
+        const post = await db.getPost([req.user?.userID, req.user?.userID, postID])
 
         await db.createComment([content, post.id, req.user?.userID])
         res.status(201).send({message: "Comment created successfully"})
@@ -57,7 +58,7 @@ export async function listComment(req: JWTRequest, res: Response)
 {
     try 
     {
-        const postID = req.body.post_id;
+        const postID = req.params.post_id;
         const comments = await db.listComment([postID]);
         res.status(200).json(comments)
     } 

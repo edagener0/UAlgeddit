@@ -8,6 +8,6 @@ commentsRouter.post("/create", jwtAuthMiddleware, async (req, res) => await crea
 
 commentsRouter.post("/delete/:id", jwtAuthMiddleware, async (req, res) => await deleteComment(req, res));
 
-commentsRouter.get("/list", jwtAuthMiddleware, async (req, res) => await listComment(req, res));
+commentsRouter.get("/list/:post_id", jwtAuthMiddleware, async (req, res) => await listComment(req, res));
 
 export default commentsRouter;
