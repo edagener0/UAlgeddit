@@ -17,11 +17,19 @@ export const POST_DETAIL = `${POST_URL}/detail`
 
 export const POST_CREATE = `${POST_URL}/create`
 
+export const POST_DELETE = `${POST_URL}/delete`
+
 export const POST_UPVOTE = `${POST_URL}/upvote`
 
 export const POST_DOWNVOTE = `${POST_URL}/downvote`
 
 export const POST_UNVOTE = `${POST_URL}/unvote`
+
+const COMMENT_URL = `${URL}/comment`
+
+export const COMMENT_LIST = `${COMMENT_URL}/list`
+export const COMMENT_CREATE = `${COMMENT_URL}/create`
+export const COMMENT_DELETE = `${COMMENT_URL}/delete`
 
 const SUBGEDDIT_URL = `${URL}/subgeddit`
 

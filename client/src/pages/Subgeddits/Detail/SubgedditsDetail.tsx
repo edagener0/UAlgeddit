@@ -3,18 +3,17 @@ import "./SubgedditsDetail.css"
 import type PostListI from "../../Posts/List/PostListInterface";
 import { SUBGEDDIT_DETAIL } from "../../../utils/Constants";
 import PostCard from "../../../components/PostCard/PostCard";
-import { Link, useParams } from "react-router-dom";
-import Button from "../../../components/DefaultButton/DefaultButton";
+import { useParams } from "react-router-dom";
 
 export default function SubgedditsDetail({token}: {token: string | null})
 {
 
-    const {subgeddit_id} = useParams();
+    const {id} = useParams();
     const [posts, setPosts] = useState<PostListI[]>([]);
 
     const fetchPosts = async () => {
         
-        const response = await fetch(`${SUBGEDDIT_DETAIL}/${subgeddit_id}`,
+        const response = await fetch(`${SUBGEDDIT_DETAIL}/${id}`,
             {
                 method: "GET",
                 headers: {
@@ -34,15 +33,14 @@ export default function SubgedditsDetail({token}: {token: string | null})
 
     return (
         <div>
-            <div id="create-container">
-                <Link to={"/posts/create"}>
-                    <Button label="Create Post"/>
-                </Link>
-            </div>
             <div id="posts-container">
-                {posts.map((post, index) => {
+                {posts.length == 0 ? (
+                    <h1>No Posts found.</h1>
+                ):
+                    posts.map((post, index) => {
                     return <PostCard post={post} key={index}/>
-                })}
+                })
+                }
             </div>
         </div>
     )

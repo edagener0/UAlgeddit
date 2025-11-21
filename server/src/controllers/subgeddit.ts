@@ -9,6 +9,7 @@ export async function createSubgeddit(req: JWTRequest, res: Response)
     try 
     {
         const name = req.body.name
+        if (name.trim() === "") throw new Error("Empty content")
         await db.insertSubgeddit([name, req.user?.userID]);     
     } 
     catch (error) 

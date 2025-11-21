@@ -1,3 +1,4 @@
+import "./SubgedditsCreate.css"
 import Success from "../../../components/Messages/Success/Success";
 import Error from "../../../components/Messages/Error/Error";
 import { SUBGEDDIT_CREATE } from "../../../utils/Constants";
@@ -13,7 +14,8 @@ export default function SubgedditsCreate({token, currentUserID}: {token: string 
     
         const handleCreation = async (e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault()
-                const response = await fetch(SUBGEDDIT_CREATE, 
+                const url = e.currentTarget.action;
+                const response = await fetch(url, 
                     {
                         method: "POST",
                         headers: {
