@@ -1,4 +1,5 @@
-const URL = "http://127.0.0.1:3000"
+const DOMAIN = "127.0.0.1:3000"
+const URL = `http://${DOMAIN}`
 
 const AUTH_URL = `${URL}/auth`
 
@@ -37,3 +38,6 @@ export const SUBGEDDIT_CREATE = `${SUBGEDDIT_URL}/create`
 export const SUBGEDDIT_LIST = `${SUBGEDDIT_URL}/list`
 
 export const SUBGEDDIT_DETAIL = `${SUBGEDDIT_URL}/detail`
+
+
+export const GLOBAL_CHAT_WS_URL = `ws://${DOMAIN}/chat/global`

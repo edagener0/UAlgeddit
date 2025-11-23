@@ -32,11 +32,9 @@ function App() {
   const decodedJWT = getUserFromToken(token)
 
   let currentUserID = null;
-  let currentUserUsername = null
   if (decodedJWT !== null)
   {
     currentUserID = decodedJWT.userID
-    currentUserUsername = decodedJWT.username
   }
   
   return (
@@ -53,7 +51,7 @@ function App() {
           <Route path="/subgeddits/:id" element={<SubgedditsDetail token={token}/>}/>
           <Route path="/subgeddits/:subgedditID/post/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/auth/logout" element={<Logout logout={logout}/>}/>
-          <Route path="/chat" element={<Chat username={currentUserUsername}/>}></Route>
+          <Route path="/chat" element={<Chat token={token}/>}></Route>
         </Route>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/auth/register" element={<Register token={token}/>}/>
