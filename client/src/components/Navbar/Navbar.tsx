@@ -15,6 +15,7 @@ export default function Navbar({token}: {token: string | null})
                             <NavItem href="/subgeddits/create" label="Create"/>
                         </NavDropMenu>
                         <NavItem href="/posts" label="Posts"/>
+                        <NavItem href="/chat" label="Chat"/>
                         <NavItem href="/auth/logout" label="Logout"/>
                     </>
                     

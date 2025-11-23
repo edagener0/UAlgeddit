@@ -55,7 +55,7 @@ export async function login(req: Request, res: Response)
     }
 
     // Enviar o token como resposta.
-    const token = jwt.sign({userID: user.id}, SECRET_KEY, {expiresIn: "1h"});
+    const token = jwt.sign({userID: user.id, username: user.username}, SECRET_KEY, {expiresIn: "1h"});
     res.status(200).send({token})
 }
 

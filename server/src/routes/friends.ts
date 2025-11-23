@@ -13,4 +13,5 @@ friendsRouter.post("/request/accept/", jwtAuthMiddleware, async (req, res) => aw
 friendsRouter.post("/request/decline/", jwtAuthMiddleware, async (req, res) => await declineFriendshipRequest(req, res));
 
 friendsRouter.post("/unfriend", jwtAuthMiddleware, async (req, res) => await unfriend(req, res));
+
 export default friendsRouter;
