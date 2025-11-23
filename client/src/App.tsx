@@ -14,6 +14,7 @@ import SubgedditsDetail from './pages/Subgeddits/Detail/SubgedditsDetail'
 import { getUserFromToken } from './utils/User'
 import SubgedditsCreate from './pages/Subgeddits/Create/SubgedditsCreate'
 import PostsCreate from './pages/Posts/Create/PostCreate'
+import Chat from './pages/Chat/Chat'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -28,8 +29,16 @@ function App() {
     setToken(null);
   };
 
-  const currentUserID = getUserFromToken(token);
+  const decodedJWT = getUserFromToken(token)
 
+  let currentUserID = null;
+  let currentUserUsername = null
+  if (decodedJWT !== null)
+  {
+    currentUserID = decodedJWT.userID
+    currentUserUsername = decodedJWT.username
+  }
+  
   return (
     
     <BrowserRouter>
@@ -44,6 +53,7 @@ function App() {
           <Route path="/subgeddits/:id" element={<SubgedditsDetail token={token}/>}/>
           <Route path="/subgeddits/:subgedditID/post/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/auth/logout" element={<Logout logout={logout}/>}/>
+          <Route path="/chat" element={<Chat username={currentUserUsername}/>}></Route>
         </Route>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/auth/register" element={<Register token={token}/>}/>

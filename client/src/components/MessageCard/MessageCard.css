@@ -1,0 +1,14 @@
+.message-container {
+    display: flex;
+    flex-direction: row;
+    background-color: red;
+    gap: 1rem;
+}
+
+.message-user-container {
+    background-color: rgb(98, 98, 197);
+}
+
+.message-content-container {
+    white-space: pre-line;
+}

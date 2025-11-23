@@ -223,7 +223,31 @@ export default function PostDetail({token, currentUserID}: {token: string | null
         setSuccess(null);
       }
     }
+    
+    const handleCommentDelete = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!window.confirm("Are you sure you'd like to delete this comment?")) return;
+      const url = e.currentTarget.action;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
+        if (response.status == 200)
+        {
+            getComments();
+            setSuccess("Comment deleted successfully!")
+            setError(null)
+        }
+        else
+        {
+            setError("Error on comment delete!")
+            setSuccess(null);
+        }
+    }
     useEffect(() => {
         getPost();
     }, [])
@@ -287,6 +311,7 @@ export default function PostDetail({token, currentUserID}: {token: string | null
                 </div>
             </div>
             <div id="comments">
+              <h1 id="comment-display-title">Comments</h1>
               <div id="comment-create-container">
                     <Form id="comment-create-form" action={COMMENT_CREATE} method="POST" onSubmit={createComment}>
                       <TextField name="content" value={commentContent} onChange={(e) => setCommentContent(e.target.value)}></TextField>
@@ -294,9 +319,8 @@ export default function PostDetail({token, currentUserID}: {token: string | null
                     </Form>
               </div>
               <div id="comments-display">
-                <h1 id="comment-display-title">Comments</h1>
                 {comments.map((comment, index) => {
-                  return <CommentCard key={index} comment={comment} currentUserID={currentUserID} token={token} getComments={getComments} setSuccess={setSuccess} setError={setError}/>
+                  return <CommentCard key={index} comment={comment} currentUserID={currentUserID} handleCommentDelete={handleCommentDelete}/>
                 })}
               </div>
             </div>
