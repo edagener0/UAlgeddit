@@ -2,7 +2,7 @@ import NavDropMenu from "../NavDropMenu/NavDropMenu"
 import "./Navbar.css"
 import NavItem from "./NavItem/NavItem"
 import NavMenu from "./NavMenu/NavMenu"
-export default function Navbar({token}: {token: string | null})
+export default function Navbar({token, currentUserID}: {token: string | null, currentUserID: number | null})
 {
     return (
         <div className="navbar">
@@ -16,6 +16,7 @@ export default function Navbar({token}: {token: string | null})
                         </NavDropMenu>
                         <NavItem href="/posts" label="Posts"/>
                         <NavItem href="/chat" label="Chat"/>
+                        <NavItem href={`/profile/${currentUserID}`} label="Profile" />
                         <NavItem href="/auth/logout" label="Logout"/>
                     </>
                     

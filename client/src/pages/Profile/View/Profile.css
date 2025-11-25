@@ -1,0 +1,21 @@
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+#update-profile-container {
+    text-decoration: none;
+    color: inherit;
+    background-color: rgb(99, 160, 168);
+    border-radius: 20px;
+}
+
+#biography-container {
+    white-space: pre-line;
+}
+
+#update-profile-container:hover {
+    opacity: 0.5;
+}

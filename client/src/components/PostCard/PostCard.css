@@ -19,7 +19,7 @@
 
 }
 
-.post-card-header:hover, .post-card-body:hover {
+.post-card-header:hover, .post-card-body:hover, .post-card-footer:hover {
     opacity: 0.5;
 }
 
@@ -36,6 +36,8 @@
     width: 100%;
     text-align: center;
     border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .posts-stats {

@@ -23,7 +23,7 @@ export default function Chat({token}: {token: string | null})
 
             websocket.onmessage = (event) => {
                 const received = JSON.parse(event.data)
-                setMessages((prevMessages) => [...prevMessages, {username: received.username, content: received.message}]);
+                setMessages((prevMessages) => [...prevMessages, {user_id: received.user_id, username: received.username, content: received.message}]);
             };
         }, 100)
         return () => clearTimeout(timer);

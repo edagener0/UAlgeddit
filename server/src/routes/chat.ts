@@ -24,7 +24,7 @@ export const setupChatWS = () => {
         clients.add(ws)
 
         ws.on("message", (msg) => {
-            const payload = JSON.stringify({username: user.username, message: msg})
+            const payload = JSON.stringify({user_id: user.userID, username: user.username, message: msg})
             clients.forEach((client) => {
                 if (client.readyState === 1)
                 {
