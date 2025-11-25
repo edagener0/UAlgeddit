@@ -15,6 +15,9 @@ import { getUserFromToken } from './utils/User'
 import SubgedditsCreate from './pages/Subgeddits/Create/SubgedditsCreate'
 import PostsCreate from './pages/Posts/Create/PostCreate'
 import Chat from './pages/Chat/Chat'
+import Profile from './pages/Profile/View/Profile'
+import ProfileUpdate from './pages/Profile/Update/ProfileUpdate'
+import SubgedditUpdate from './pages/Subgeddits/Update/SubgedditUpdate'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -40,18 +43,21 @@ function App() {
   return (
     
     <BrowserRouter>
-      <Navbar token={token}/>
+      <Navbar token={token} currentUserID={currentUserID}/>
       <Routes>
         <Route element={<PrivateRoutes token={token} logout={logout}/>}>
           <Route path="/posts" element={<ListPosts token={token}/>}/>
           <Route path="/posts/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/posts/:id" element={<PostDetail token={token} currentUserID={currentUserID}/>}/>
-          <Route path="/subgeddits" element={<SubgedditsList token={token}/>}/>
+          <Route path="/subgeddits" element={<SubgedditsList token={token} currentUserID={currentUserID}/>}/>
           <Route path="/subgeddits/create" element={<SubgedditsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/subgeddits/:id" element={<SubgedditsDetail token={token}/>}/>
           <Route path="/subgeddits/:subgedditID/post/create" element={<PostsCreate token={token} currentUserID={currentUserID}/>}/>
           <Route path="/auth/logout" element={<Logout logout={logout}/>}/>
-          <Route path="/chat" element={<Chat token={token}/>}></Route>
+          <Route path="/chat" element={<Chat token={token}/>}/>
+          <Route path="/profile/:user_id" element={<Profile token={token} currentUserID={currentUserID}/>}/>
+          <Route path="/profile/update/:user_id" element={<ProfileUpdate token={token}/>}/>
+          <Route path="/subgeddits/update/:subgeddit_id" element={<SubgedditUpdate token={token}/>}></Route>
         </Route>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/auth/register" element={<Register token={token}/>}/>

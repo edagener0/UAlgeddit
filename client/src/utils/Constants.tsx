@@ -38,6 +38,13 @@ export const SUBGEDDIT_CREATE = `${SUBGEDDIT_URL}/create`
 export const SUBGEDDIT_LIST = `${SUBGEDDIT_URL}/list`
 
 export const SUBGEDDIT_DETAIL = `${SUBGEDDIT_URL}/detail`
+export const SUBGEDDIT_UPDATE = `${SUBGEDDIT_URL}/update`
 
 
 export const GLOBAL_CHAT_WS_URL = `ws://${DOMAIN}/chat/global`
+
+
+export const PROFILE_URL = `${URL}/profile`
+
+export const PROFILE_VIEW = `${PROFILE_URL}/view`
+export const PROFILE_UPDATE = `${PROFILE_URL}/update`

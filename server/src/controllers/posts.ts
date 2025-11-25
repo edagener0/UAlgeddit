@@ -1,4 +1,5 @@
 import { db } from "../database/database";
+import { Empty } from "../exceptions/Empty";
 import { NotFound } from "../exceptions/NotFound";
 import JWTRequest from "../types/JWTRequest";
 import { Response } from "express";
@@ -9,6 +10,7 @@ export async function createPost(req: JWTRequest, res: Response)
     {
         const title = req.body.title;
         const content = req.body.content;
+        if (title.trim() === "" || content.trim() === "") throw new Empty("Empty title or content on post")
         const subgedditID = req.body.subgeddit_id
         const subgeddit = await db.getSubgeddit([subgedditID]);
         await db.insertPost([title, content, subgeddit.id, req.user?.userID]);
@@ -19,6 +21,10 @@ export async function createPost(req: JWTRequest, res: Response)
         if (error instanceof NotFound)
         {
             res.status(404).send({message: "Subgeddit to create post not found."})
+        }
+        else if (error instanceof Empty)
+        {
+            res.status(400).send({message: error.message})
         }
         else
         {
@@ -121,8 +127,6 @@ export async function upvotePost(req: JWTRequest, res: Response)
 
 export async function downvotePost(req: JWTRequest, res: Response)
 {
-    
-
     try 
     {
         const postID = req.params.id;

@@ -6,6 +6,7 @@ import commentsRouter from "./routes/comments";
 import friendsRouter from "./routes/friends";
 import subgedditRouter from "./routes/subgeddit";
 import chatRouter, { setupChatWS } from "./routes/chat";
+import profileRouter from "./routes/profile";
 
 const cors = require("cors");
 const PORT = 3000;
@@ -32,6 +33,7 @@ app.use("/comment", commentsRouter);
 app.use("/friend", friendsRouter);
 app.use("/subgeddit", subgedditRouter)
 app.use("/chat", chatRouter)
+app.use("/profile", profileRouter);
 
 
 app.listen(PORT, () => {

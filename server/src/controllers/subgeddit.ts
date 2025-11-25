@@ -2,6 +2,7 @@ import { Response } from "express";
 import JWTRequest from "../types/JWTRequest";
 import { db } from "../database/database";
 import { NotFound } from "../exceptions/NotFound";
+import { Empty } from "../exceptions/Empty";
 
 
 export async function createSubgeddit(req: JWTRequest, res: Response)
@@ -9,14 +10,22 @@ export async function createSubgeddit(req: JWTRequest, res: Response)
     try 
     {
         const name = req.body.name
-        if (name.trim() === "") throw new Error("Empty content")
+        if (name.trim() === "") throw new Empty("Empty name")
         await db.insertSubgeddit([name, req.user?.userID]);     
     } 
     catch (error) 
     {
-        res.status(500).send({message: "Internal Server Error."})
-        console.log(error)
-        return;
+        if (error instanceof Empty)
+        {
+            res.status(400).send({message: error.message})
+        }
+        else
+        {
+
+            res.status(500).send({message: "Internal Server Error."})
+            console.log(error)
+            return;
+        }
     }
 
     res.status(201).send({message: "Subgeddit created successfully."});
@@ -28,6 +37,7 @@ export async function updateSubgeddit(req: JWTRequest, res: Response)
     {
         const subgedditID = req.params.id;
         const name = req.body.name;
+        if (name.trim() === "") throw new Empty("Empty name")
         await db.updateSubgeddit({id: subgedditID, name: name, userID: req.user?.userID});
     }
     catch (error) 
@@ -36,6 +46,10 @@ export async function updateSubgeddit(req: JWTRequest, res: Response)
         if (error instanceof NotFound)
         {
             res.status(404).send({message: "Subgeddit Not Found"});
+        }
+        else if (error instanceof Empty)
+        {
+            res.status(400).send({message: error.message});
         }
         else
         {

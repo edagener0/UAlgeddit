@@ -6,7 +6,7 @@ import type SubgedditInterface from "./SubgedditListInterface";
 import { Link } from "react-router-dom";
 import Button from "../../../components/DefaultButton/DefaultButton";
 
-export default function SubgedditsList({token}: {token: string | null})
+export default function SubgedditsList({token, currentUserID}: {token: string | null, currentUserID: number | null})
 {
 const [subgeddits, setSubgeddits] = useState<SubgedditInterface[]>([]);
 
@@ -34,7 +34,7 @@ const [subgeddits, setSubgeddits] = useState<SubgedditInterface[]>([]);
         <div>
             <div id="subgeddits-container">
                 {subgeddits.map((subgeddit, index) => {
-                    return <SubgedditCard subgeddit={subgeddit} key={index}/>
+                    return <SubgedditCard subgeddit={subgeddit} currentUserID={currentUserID} key={index}/>
                 })}
                 
             </div>

@@ -22,6 +22,8 @@
     background-color: rgb(70, 110, 132);
     margin: 2%;
     text-align: center;
+    text-decoration: none;
+    color: inherit;
 }
 
 .subgeddit-avatar {
@@ -30,19 +32,25 @@
     border-radius: 50%;
 }
 
-.subgeddit-create-link {
+.subgeddit-create-link, .subgeddit-update-link {
     background-color: rgb(107, 107, 220);
     border-radius: 10px;
     text-decoration: none;
-    color: inherit;
+    color: inherit
 }
 
-.subgeddit-create-link:hover {
+.subgeddit-create-link:hover, .subgeddit-update-link:hover {
+    opacity: 0.5;
+}
+
+.subgeddit-footer:hover {
     opacity: 0.5;
 }
 
 .subgeddit-create-post-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
 }

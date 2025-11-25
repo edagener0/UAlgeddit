@@ -112,7 +112,7 @@ class DatabaseHelper {
 
   public async listPostForSubgeddit(params: any[]): Promise<any>
   {
-    const query = `select post.id as post_id, user.username, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
+    const query = `select post.id as post_id, user.username, user.id as user_id, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
     (select count(*) from vote where vote.vote_num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.vote_num = 1 and post_id = post.id) as upvotes
     from post, user, subgeddit where post.user_id = user.id and post.subgeddit_id = subgeddit.id and post.subgeddit_id = ?`;
     const response = await this.executeQuery(query, params)
@@ -122,7 +122,7 @@ class DatabaseHelper {
 
   public async listPost(params: any[]): Promise<any>
   {
-    const query = `select post.id as post_id, user.username, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
+    const query = `select post.id as post_id, user.username, user.id as user_id, subgeddit_id as subgeddit_id, subgeddit.name as subgeddit_name, post.title,
     (select count(*) from vote where vote.vote_num = -1 and post_id = post.id) as downvotes, (select count(*) from vote where vote.vote_num = 1 and post_id = post.id) as upvotes
     from post, user, subgeddit where post.user_id = user.id and post.subgeddit_id = subgeddit.id`
     const response = await this.executeQuery(query, params);
@@ -253,15 +253,35 @@ class DatabaseHelper {
   {
     const query = "select * from user where username = ?";
     const response = await this.executeQuery(query, params);
+    if (response.length === 0)
+    {
+      throw new NotFound("User not found!")
+    }
     return response[0]
   }
 
   public async getUserFromId(params: any[]): Promise<any>
   {
-    const query = "select * from user where id = ?";
+    const query = "select id, username, biography, birthday, karma from user where id = ?";
     const response = await this.executeQuery(query, params);
+    if (response.length === 0)
+    {
+      throw new NotFound("User not found!")
+    }
     return response[0]
   }
+
+  public async updateUserProfile(params: any[]): Promise<any> 
+  {
+    const query = "update user set biography = ?, birthday = ? where id = ?";
+    const changes = await this.executeQueryGetChanges(query, params);
+    if (changes === 0)
+    {
+      throw new NotFound("User not found!")
+    }
+    return changes
+  }
+
 
   public close(): void {
     this.db.close();

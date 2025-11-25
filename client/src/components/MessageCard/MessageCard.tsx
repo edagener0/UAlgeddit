@@ -6,7 +6,7 @@ export default function MessageCard({message}: {message: MessageI})
 {
     return (
         <div className="message-container">
-            <Link to="" className="message-user-container">
+            <Link to={`/profile/${message.user_id}`} className="message-user-container">
                 <p>{message.username}: </p>
             </Link>
             <div className="message-content-container">
