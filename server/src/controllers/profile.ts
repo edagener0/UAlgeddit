@@ -8,8 +8,15 @@ export async function viewProfile(req: JWTRequest, res: Response)
     try 
     {
         const userID = req.params.id;
+        if (!userID || !req.user?.userID)
+        {
+            throw Error("User ids not found.");
+        }
         const user = await db.getUserFromId([userID]);
-        res.status(200).json(user);
+        const areFriends = await db.areFriends(userID, req.user.userID)
+        const isFriendRequestPending = await db.existsFriendRequest(req.user.userID, userID);
+        const totalFriends = await db.getTotalUserFriendsByUserID([userID]);
+        res.status(200).json({...user, areFriends, isFriendRequestPending, totalFriends});
     }
     catch (error) 
     {
