@@ -6,10 +6,10 @@ export default function HomePage()
             <h1 id="title">UAlgeddit</h1>
             <div className="card-container">
                 <div className="home-card">
-                    <p>Aplicação desenvolvida no âmbito de <strong>Desenvolvimento de Aplicações para a Web</strong> na Universidade do Algarve</p>
+                    <p>Application developed in <strong>Web Development</strong> at University of Algarve.</p>
                 </div>
                 <div className="home-card">
-                    <p>Esta aplicação é muito semelhante ao Reddit em vários aspetos. Esta aplicação permite os utilizadores conectarem-se entre si.</p>
+                    <p>This app is similar to reddit in many aspects. This app allows users to connect with each other.</p>
                 </div>
             </div>
             

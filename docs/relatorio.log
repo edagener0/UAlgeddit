@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.11.14)  3 DEC 2025 17:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.11.14)  11 DEC 2025 18:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -292,17 +292,23 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (456.14017pt too wide) in paragraph at lines 32--79
+Overfull \hbox (5.61176pt too wide) in paragraph at lines 36--37
+\OT1/cmr/m/n/10 poss^^S^^Pvel dar up-vote ("like") ou down-vote ("dis-like") pa
+ra al^^Sem disso tamb^^Sem
+ []
+
+
+Overfull \hbox (104.56087pt too wide) in paragraph at lines 46--93
  [][] 
  []
 
 [2]
-Overfull \hbox (114.50078pt too wide) in paragraph at lines 85--98
+Overfull \hbox (99.9775pt too wide) in paragraph at lines 99--112
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 101--106
+Underfull \hbox (badness 10000) in paragraph at lines 115--120
 
  []
 
@@ -310,41 +316,75 @@ Underfull \hbox (badness 10000) in paragraph at lines 101--106
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.106 	\subsubsection
+l.120 	\subsubsection
                      {Auth}pdfTeX warning (ext4): destination with the same ide
 ntifier (name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.106 	\subsubsection
+l.120 	\subsubsection
                      {Auth}] [4]
-<ERBD.png, id=141, 965.6075pt x 1176.395pt>
-File: ERBD.png Graphic file (type png)
-<use ERBD.png>
-Package pdftex.def Info: ERBD.png  used on input line 170.
-(pdftex.def)             Requested size: 345.0pt x 420.30673pt.
-
-Overfull \hbox (20.11168pt too wide) in paragraph at lines 165--172
+Overfull \hbox (20.11168pt too wide) in paragraph at lines 179--182
 \OT1/cmr/m/n/10 De modo a de-sen-vol-ver uma base de da-dos se-guindo as me-lho
 -res pr^^Saticas desenvolveu-
  []
 
-[5] [6pdfTeX warning (ext4): destination with the same identifier (name{figure.
-1}) has been already used, duplicate ignored
+<ERBD.png, id=177, 965.6075pt x 1176.395pt>
+File: ERBD.png Graphic file (type png)
+<use ERBD.png>
+Package pdftex.def Info: ERBD.png  used on input line 185.
+(pdftex.def)             Requested size: 345.0pt x 420.30673pt.
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--230
+
+ []
+
+[6pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
+has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.190 \end{document}
-                     <./ERBD.png>] [7] (./relatorio.aux)
+l.230 
+       <./ERBD.png>] [7] [8] (./relatorio.aux)
 Package rerunfilecheck Info: File `relatorio.out' has not changed.
-(rerunfilecheck)             Checksum: F4E54A24014999DEF2FE28218C72DFA7;2501.
+(rerunfilecheck)             Checksum: C2E0DA98D2DF837C8BAC0D2E99A25056;3563.
  ) 
 Here is how much of TeX's memory you used:
- 9204 strings out of 478287
- 146608 string characters out of 5849288
- 461620 words of memory out of 5000000
- 27272 multiletter control sequences out of 15000+600000
+ 9225 strings out of 478287
+ 146936 string characters out of 5849288
+ 464626 words of memory out of 5000000
+ 27285 multiletter control sequences out of 15000+600000
  474195 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,10n,63p,258b,408s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,12n,63p,301b,406s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/edagener/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
@@ -352,10 +392,10 @@ share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on relatorio.pdf (7 pages, 171772 bytes).
+Output written on relatorio.pdf (8 pages, 179074 bytes).
 PDF statistics:
- 199 PDF objects out of 1000 (max. 8388607)
- 173 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 182 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 243 PDF objects out of 1000 (max. 8388607)
+ 214 compressed objects within 3 object streams
+ 42 named destinations out of 1000 (max. 500000)
+ 238 words of extra memory for PDF output out of 10000 (max. 10000000)
 
