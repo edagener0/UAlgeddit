@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.11.14)  11 DEC 2025 18:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.11.14)  11 DEC 2025 21:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -204,46 +204,88 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks18
 \@floatcapt=\box51
 )
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 227.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1356.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count272
+\lst@gtempboxa=\box52
+\lst@token=\toks19
+\lst@length=\count273
+\lst@currlwidth=\dimen146
+\lst@column=\count274
+\lst@pos=\count275
+\lst@lostspace=\dimen147
+\lst@width=\dimen148
+\lst@newlines=\count276
+\lst@lineno=\count277
+\lst@maxwidth=\dimen149
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count278
+\lst@skipnumbers=\count279
+\lst@framebox=\box53
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2020/03/24 1.8d listings configuration
+))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count272
-\l__pdf_internal_box=\box52
+\l__color_backend_stack_int=\count280
+\l__pdf_internal_box=\box54
 )
 (./relatorio.aux)
 \openout1 = `relatorio.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count273
-\scratchdimen=\dimen146
-\scratchbox=\box53
-\nofMPsegments=\count274
-\nofMParguments=\count275
-\everyMPshowfont=\toks19
-\MPscratchCnt=\count276
-\MPscratchDim=\dimen147
-\MPnumerator=\count277
-\makeMPintoPDFobject=\count278
-\everyMPtoPDFconversion=\toks20
+\scratchcounter=\count281
+\scratchdimen=\dimen150
+\scratchbox=\box55
+\nofMPsegments=\count282
+\nofMParguments=\count283
+\everyMPshowfont=\toks20
+\MPscratchCnt=\count284
+\MPscratchDim=\dimen151
+\MPnumerator=\count285
+\makeMPintoPDFobject=\count286
+\everyMPtoPDFconversion=\toks21
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -253,7 +295,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 11.
+Package hyperref Info: Link coloring OFF on input line 18.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -264,138 +306,200 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count279
+\c@section@level=\count287
 )
-LaTeX Info: Redefining \ref on input line 11.
-LaTeX Info: Redefining \pageref on input line 11.
-LaTeX Info: Redefining \nameref on input line 11.
+LaTeX Info: Redefining \ref on input line 18.
+LaTeX Info: Redefining \pageref on input line 18.
+LaTeX Info: Redefining \nameref on input line 18.
 
 (./relatorio.out) (./relatorio.out)
 \@outlinefile=\write3
 \openout3 = `relatorio.out'.
 
+\c@lstlisting=\count288
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 13.
+(Font)              <12> on input line 20.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 13.
+(Font)              <8> on input line 20.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 13.
+(Font)              <6> on input line 20.
  (./relatorio.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 4.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 4.
-)
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}])
 \tf@toc=\write4
 \openout4 = `relatorio.toc'.
 
- [1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (5.61176pt too wide) in paragraph at lines 36--37
+ [2]
+Overfull \hbox (5.61176pt too wide) in paragraph at lines 43--44
 \OT1/cmr/m/n/10 poss^^S^^Pvel dar up-vote ("like") ou down-vote ("dis-like") pa
 ra al^^Sem disso tamb^^Sem
  []
 
 
-Overfull \hbox (104.56087pt too wide) in paragraph at lines 46--93
+Overfull \hbox (104.56087pt too wide) in paragraph at lines 53--100
  [][] 
  []
 
-[2]
-Overfull \hbox (99.9775pt too wide) in paragraph at lines 99--112
+[3]
+Overfull \hbox (99.9775pt too wide) in paragraph at lines 106--119
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 115--120
+Underfull \hbox (badness 10000) in paragraph at lines 122--127
 
  []
 
-[3pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
+[4pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.120 	\subsubsection
+l.127 	\subsubsection
                      {Auth}pdfTeX warning (ext4): destination with the same ide
 ntifier (name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.120 	\subsubsection
-                     {Auth}] [4]
-Overfull \hbox (20.11168pt too wide) in paragraph at lines 179--182
+l.127 	\subsubsection
+                     {Auth}] [5]
+Overfull \hbox (20.11168pt too wide) in paragraph at lines 186--189
 \OT1/cmr/m/n/10 De modo a de-sen-vol-ver uma base de da-dos se-guindo as me-lho
 -res pr^^Saticas desenvolveu-
  []
 
-<ERBD.png, id=177, 965.6075pt x 1176.395pt>
+<ERBD.png, id=201, 965.6075pt x 1176.395pt>
 File: ERBD.png Graphic file (type png)
 <use ERBD.png>
-Package pdftex.def Info: ERBD.png  used on input line 185.
+Package pdftex.def Info: ERBD.png  used on input line 192.
 (pdftex.def)             Requested size: 345.0pt x 420.30673pt.
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--230
+Underfull \hbox (badness 10000) in paragraph at lines 198--237
 
  []
 
-[6pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
+[7pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.230 
-       <./ERBD.png>] [7] [8] (./relatorio.aux)
+l.237 
+       <./ERBD.png>] [8]
+Overfull \hbox (104.56087pt too wide) in paragraph at lines 262--331
+ [][] 
+ []
+
+[9]
+Overfull \vbox (55.76099pt too high) has occurred while \output is active []
+
+
+[10pdfTeX warning (ext4): destination with the same identifier (name{table.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.333 	\subsubsection
+                     {Restrições}]
+Overfull \hbox (99.9775pt too wide) in paragraph at lines 337--348
+ [][] 
+ []
+
+
+Overfull \hbox (100.53307pt too wide) in paragraph at lines 354--365
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--373
+
+ []
+
+[11pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.380 		\item E
+               ntrar na diretoria \textit{server}pdfTeX warning (ext4): destina
+tion with the same identifier (name{table.5}) has been already used, duplicate 
+ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.380 		\item E
+               ntrar na diretoria \textit{server}]
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2020/03/24 1.8d listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2020/03/24 1.8d listings language file
+)
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 385.
+ [12]
+Overfull \hbox (3.38841pt too wide) in paragraph at lines 415--419
+\OT1/cmr/m/n/10 Este re-lat^^Sorio foi de-sen-vol-vido re-cor-rendo a La-TeX de
+ modo a ga-ran-tir a produ^^Xc~ao
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 415--419
+
+ []
+
+[13] (./relatorio.aux)
 Package rerunfilecheck Info: File `relatorio.out' has not changed.
-(rerunfilecheck)             Checksum: C2E0DA98D2DF837C8BAC0D2E99A25056;3563.
+(rerunfilecheck)             Checksum: E6B11D44E2D91FB21878DD737D56F7E9;4060.
  ) 
 Here is how much of TeX's memory you used:
- 9225 strings out of 478287
- 146936 string characters out of 5849288
- 464626 words of memory out of 5000000
- 27285 multiletter control sequences out of 15000+600000
- 474195 words of font info for 44 fonts, out of 8000000 for 9000
+ 11450 strings out of 478287
+ 175882 string characters out of 5849288
+ 681738 words of memory out of 5000000
+ 29459 multiletter control sequences out of 15000+600000
+ 474363 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,12n,63p,301b,406s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,12n,63p,504b,1237s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/edagener/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on relatorio.pdf (8 pages, 179074 bytes).
+ist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on relatorio.pdf (13 pages, 202325 bytes).
 PDF statistics:
- 243 PDF objects out of 1000 (max. 8388607)
- 214 compressed objects within 3 object streams
- 42 named destinations out of 1000 (max. 500000)
- 238 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 311 PDF objects out of 1000 (max. 8388607)
+ 275 compressed objects within 3 object streams
+ 68 named destinations out of 1000 (max. 500000)
+ 270 words of extra memory for PDF output out of 10000 (max. 10000000)
 

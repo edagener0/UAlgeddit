@@ -3,6 +3,13 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage[portuguese]{babel}
 \usepackage{float}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+	showstringspaces=false,
+	commentstyle=\color{red},
+	keywordstyle=\color{blue}
+}
 
 \title{UAlgeddit}
 \author{Desenvolvimento de aplicações para a web \\ Martim Neves, a86010}
@@ -90,7 +97,7 @@
 				RF-21 & A aplicação dispõe de um chat global entre todos os utilizadores conectados à aplicação \\
 				\hline
 			\end{tabular}
-			\caption{Requisitos Funcionais}
+			\caption{Requisitos Funcionais Do Backend}
 		\end{table}
 		\subsubsection{Restrições}
 		As restrições indicam todas as restrições inerentes ao desenvolvimento do backend.
@@ -109,7 +116,7 @@
 				RC-4 & O backend tem de estar pronto antes do dia 20 de dezembro de 2025. \\
 				\hline
 			\end{tabular}
-			\caption{Restrições}
+			\caption{Restrições Do Backend}
 		\end{table}
 	\subsection{API}
 	A API foi desenvolvida recorrendo à linguagem de programação Typescript e à framework Express. \\
@@ -231,30 +238,183 @@
 	\section{Frontend}
 	
 	\subsection{Funcionalidades}
-	Ao navegar o Frontend é possível:
+	Ao navegar o Frontend verifica-se que a aplicação:
 	\begin{itemize}
-		\item 
+		\item Dispõe de uma barra de navegação de modo a proporcionar uma navegação fácil e intuitiva pela aplicação ao utilizador.
+		\item Dispõe de uma página inicial na qual podemos encontrar uma breve descrição da aplicação.
+		\item Dispõe de uma página para ver uma lista de vários subgeddits.
+		\item Dispõe de uma página na qual é possível efetuar a criação de um subgeddit.
+		\item Ao clicar num subgeddit é possível ver todos os detalhes desse subgeddit.
+		\item Existe uma página na qual é possível criar um post para um determinado subgeddit
+		\item Existe uma página na qual o dono de um subgeddit pode dar update ao subgeddit.
+		\item Ao clicar num subgeddit somos redirecionados para uma página na qual os posts são filtrados para apenas serem relacionados com o subgeddit em questão.
+		\item Há uma página que permite ao utilizador ter acesso a um feed com todos os posts dos utilizadores.
+		\item Existe uma página na qual os utilizadores da aplicação podem falar em tempo real.
+		\item Há uma página na qual o utilizador pode acessar o seu perfil e todas as informações relacionadas com o mesmo, incluindo os pedidos de amizade pendentes.
+		\item É possível navegar até ao perfil de outros utilizadores. Nessa página para além de obtermos as informações do utilizador é também possível enviar pedidos de amizade, verificar o estado do pedido e, caso já sejam amigos, desfazer a amizade.
 	\end{itemize}
 	\subsection{Requisitos}
 	
 	\subsubsection{Requisitos Funcionais}
-	
+	Os requisitos funcionais indicam todas as funcionalidades associadas ao frontend da aplicação.
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|p{14cm}|}
+			\hline
+			ID & Descrição \\
+			\hline
+			RF-1 & O utilizador pode navegar na aplicação a partir de uma barra de navegação. \\
+			\hline
+			RF-2 & O utilizador pode navegar para a HomePage.\\
+			\hline
+			RF-3 & O utilizador pode navegar para uma página que permita a visualização de uma lista de subgeddits.\\
+			\hline
+			RF-4 & O utilizador pode navegar para uma página que permita a criação de um subgedddit. \\
+			\hline
+			RF-5 & O utilizador pode navegar para uma página que permita o update de um subgeddit.\\
+			\hline
+			RF-6 & Na página de listagem de subgeddits o utilizador deve poder apagar ou dar update a um subgeddit.\\
+			\hline
+			RF-7 & A partir da página de listagem de subgeddits é possível navegar até ao perfil do dono do subgeddit. \\
+			\hline
+			RF-8 & A partir da página de listagem de subgeddits é possível criar um post para um subgeddit em específico. \\
+			\hline
+			RF-9 & A partir da página de listagem de subgeddits, ao clicar num subgeddit, é possível filtrar a listagem de posts para um subgeddit em específico.\\
+			\hline
+			RF-10 & O utilizador pode navegar para uma página que permita a visualização de um feed com todos os posts dos vários subgeddits.\\
+			\hline
+			RF-11 & A partir da listagem de posts é possível navegar para a página com os detalhes do subgeddit ao qual o post pertence.\\
+			\hline
+			RF-12 & A partir da listagem de posts é possível navegar para a página com as informações acerca de um utilizador, isto é, visualizar o seu perfil. \\
+			\hline
+			RF-13 & Na página de listagem de posts é possível visualizar o número de upvotes e downvotes de um post. \\
+			\hline 
+			RF-14 & Na página de listagem de posts, ao clicar num post, somos redirecionados para uma página com detalhes acerca do post. \\
+			\hline
+			RF-15 & É possível navegar para uma página com detalhes acerca dos posts. \\
+			\hline
+			RF-16 & Na página com os detalhes de um post é possível dar upvote ao post. \\
+			\hline
+			RF-17 & Na página com os detalhes de um post é possível dar downvote ao post \\
+			\hline
+			RF-18 & Na página com os detalhes de um post é possível remover o upvote ou downvote de um post \\
+			\hline
+			RF-19 & Na página com os detalhes de um post é possível criar um comentário para o post \\
+			\hline
+			RF-20 & Na página com os detalhes de um post é possível visualizar uma lista com todos os comentários.\\
+			\hline
+			RF-21 & Na página com os detalhes de um post é eliminar um comentário caso sejamos os criadores desse comentário\\
+			\hline
+			RF-22 & Na página com os detalhes de um post é eliminar o post caso sejamos os criadores do post. \\
+			\hline
+			RF-23 & É possível navegar até uma página na qual existe um chat global entre os utilizadores. \\
+			\hline
+			RF-24 & Na página com o chat global é possível enviar mensagens para todos os utilizadores conectados ao chat \\
+			\hline
+			RF-25 & Na página com o chat global é possível navegar para um perfil de um utilizador que tenha enviado mensagem \\
+			\hline
+			RF-26 & É possível navegar para uma página com o perfil de outros utilizadores. \\
+			\hline 
+			RF-27 & Um utilizador pode navegar para uma página com o seu perfil. \\
+			\hline 
+			RF-28 & Um utilizador pode dar update ao seu perfil na página com o seu perfil \\
+			\hline 
+			RF-29 & Um utilizador pode visualizar os pedidos de amizade recebidos na página com o seu perfil \\
+			\hline 
+			RF-30 & Um utilizador pode aceitar os pedidos de amizade recebidos na página com o seu perfil \\
+			\hline 
+			RF-31 & Um utilizador pode rejeitar os pedidos de amizade recebidos na página com o seu perfil.\\
+			\hline 
+			RF-32 & Na barra de navegação existe um butão que dá logout ao utilizador.\\
+			\hline 
+		\end{tabular}
+		\caption{Requisitos Funcionais Do Frontend}
+	\end{table}
 	\subsubsection{Restrições}
-	
+	As restrições indicam todas as restrições inerentes ao desenvolvimento do frontend.
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|p{14cm}|}
+			\hline
+			ID & Descrição \\
+			\hline
+			RC-1 & Toda a aplicação tem de ser desenvolvida recorrendo à linguagem de programação Typescript. \\
+			\hline
+			RC-2 & É imperativa a utilização da framework React para o desenvolvimento do frontend. \\
+			\hline
+			RC-3 & O frontend tem de estar pronto antes do dia 20 de dezembro de 2025. \\
+			\hline
+		\end{tabular}
+		\caption{Restrições Do Frontend}
+	\end{table}
 	\subsubsection{Requisitos de Qualidade}
-	
+	Os requisitos de qualidade indicam qualidades adicionais do frontend.
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|p{14cm}|}
+			\hline
+			ID & Descrição \\
+			\hline
+			RQ-1 & O frontend da aplicação deve ser intuitivo e extremamente fácil de utilizar. \\
+			\hline
+			RQ-2 & O frontend deve ter uma palete de cores agradável. \\
+			\hline
+			RQ-3 & O frontend deve ser dinâmico e estar preparado para suportar quaisquer dimensões de ecrã. \\
+			\hline
+		\end{tabular}
+		\caption{Requisitos De Qualidade Do Frontend}
+	\end{table}
 	\subsection{Layout}
+	O layout da aplicação é extremamente simples e intuitivo.\\
+	Em todas as páginas o utilizador têm uma barra de navegação a partir da qual consegue chegar à maior parte das páginas da aplicação.\\
+	Na maior parte das páginas conteúdo foi centrado na página utilizando os estilos de CSS apropriados. Nas listagens de tanto de posts como de subgedits foi utilizada a propriedade grid do CSS de modo a criar uma grelha de três colunas com a lista.\\
+	De modo a tornar os butões mais interativos todos têm um efeito especial aquando de um hover, que é colocar a opacidade a metade, de modo a informar o utilizador que o elemento é clicável, com o objetivo de tornar a aplicação mais intuitiva.\\
+	A palete de cores utilizada no layout da aplicação também é muito agradável o que torna a aplicação muito mais atrativa.\\
 	
 	\subsection{Set up}
+	\subsubsection{Prerequisitos}
+	É necessário ter o Node.js instalado para ser possível executar o aplicativo.
+	\subsubsection{Backend}
+	Para colocar o backend a funcionar deve seguir os seguintes passos:
+	\begin{enumerate}
+		\item Entrar na diretoria \textit{server}
+		\item Executar o comando \textit{npm install} de modo a instalar todas as dependências.
+		\item Executar o aplicativo server-side utilizando o comando criado \textit{npm start}.
+	\end{enumerate}
+	\begin{center}
+		\begin{lstlisting}[language=bash,caption={Executar o Backend}]
+			cd ./server
+			npm install
+			npm start
+		\end{lstlisting}
+	\end{center}
 	
+	
+	\subsubsection{Frontend}
+	\begin{enumerate}
+		\item Entrar na diretoria \textit{client}
+		\item Executar o comando \textit{npm install} de modo a instalar todas as dependências.
+		\item Executar o aplicativo client-side utilizando o comando \textit{npm run dev}
+	\end{enumerate}
+	\begin{center}
+		\begin{lstlisting}[language=bash,caption={Executar o Frontend}]
+			cd ./client
+			npm install
+			npm run dev
+		\end{lstlisting}
+	\end{center}	
 	\subsection{Funcionalidades Extra}
 	
 	\subsubsection{Chat Global}
-	
+	O chat global foi implementado através de uma websocket e permite a comunicação em tempo real entre todos os utilizadores da aplicação. Existe uma página na qual os utilizadores podem trocar mensagens entre si de modo a promover a comunicação e partilha de informação entre utilizadores, tal como entendido pelo desenvolvimento da aplicação.
 	\subsubsection{Sistema de amizades}
-	
+	A aplicação dispõe de um sistema de amizades. Os utilizadores podem enviar pedidos de amizade, aceitar ou recusar a amizade ou até mesmo desfazer a amizade com outros utilizadores. Foi muito duro implementar este sistema pois envolveu muito trabalho no backend, principalmente no que diz respeito à base de dados dado que para além das relações inerentes ao sistema alguns triggers tiveram de ser desenvovolvidos de modo a tornar possível esta funcionalidade.
 	\subsubsection{Perfil e Karma}
-	
-	
+	O karma de um utilizador aumenta quando outro utilizador dá upvote ao seu post e, diminui quando um utilizador dá downvote ao seu post. De modo a tornar esta funcionalidade possível teve de se desenvolver alguns triggers na base de dados para as variações do karma aquando de um voto no post.
+	\section{Considerações Finais}
+	A aplicação foi desenvolvida recorrendo aos meus conhecimentos de Typescript, HTML, CSS, React e Express. Procurou-se aprofundar os conhecimentos nestas tecnologias ao longo do desenvolvimento do projeto.\\Aprendi a desenvolver um backend com uma REST API e uma base de dados de modo a manter a consistência e integridade dos dados.\\Desenvolvi um frontend e procurei efetuar a ligação entre o frontend e o backend a partir de HTTP requests.\\
+	Ao longo do desenvolvimento desta aplicação aplicou-se diversos conhecimentos adquiridos no decorrer do curso de Engenharia Informática, nomeadamente de Base de Dados, Engenharia de Software, Programação e Interfaces Pessoa Máquina.\\
+	Este relatório foi desenvolvido recorrendo a LaTeX de modo a garantir a produção de um relatório consistente e coerente.\\
+	Ultrapassei todos os desafios que me foram colocados e sinto que o projeto me ajudou a evoluir imenso.\\
 
 \end{document}
