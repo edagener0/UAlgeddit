@@ -8,8 +8,8 @@ export async function createFriendshipRequest(req: JWTRequest, res: Response)
     try 
     {
         const to_user_id = req.body.to_user_id;
-        const to_user = await db.getUser([to_user_id])
-        if (to_user.id === to_user.id)
+        const to_user = await db.getUserFromId([to_user_id])
+        if (to_user.id === req.user?.userID)
         {
             throw new Error("You can't send a friend request to yourself.");
         }
@@ -28,7 +28,17 @@ export async function listReceivedFriendshipRequest(req: JWTRequest, res: Respon
     try 
     {
         const friendRequests = await db.listReceivedFriendshipRequest([req.user?.userID]);
-        res.status(200).json(friendRequests);
+
+        const detailedRequests = await Promise.all(
+            friendRequests.map(async (request: any) => {
+                const sender = await db.getUserFromId([request.from_user_id]);
+                return {
+                    ...request,
+                    from_username: sender.username
+                }
+            })
+        )
+        res.status(200).json(detailedRequests);
     } 
     catch (error) 
     {
@@ -41,9 +51,9 @@ export async function acceptFriendshipRequest(req: JWTRequest, res: Response)
 {
     try 
     {
-        const to_user_id = req.body.to_user_id;
-        const to_user = await db.getUser([to_user_id])
-        await db.acceptFriendshipRequest([req.user?.userID, to_user.id]);
+        const from_user_id = req.body.from_user_id;
+        const to_user = await db.getUserFromId([from_user_id])
+        await db.acceptFriendshipRequest([to_user.id, req.user?.userID]);
         res.status(200).send({message: "Friend request accepted successfully."})
     } 
     catch (error) 
@@ -64,9 +74,9 @@ export async function declineFriendshipRequest(req: JWTRequest, res: Response)
 {
     try 
     {
-        const to_user_id = req.body.to_user_id;
-        const to_user = await db.getUser([to_user_id])
-        await db.declineFriendshipRequest([req.user?.userID, to_user.id]);
+        const from_user_id = req.body.from_user_id;
+        const to_user = await db.getUserFromId([from_user_id])
+        await db.declineFriendshipRequest([to_user.id, req.user?.userID]);
         res.status(200).send({message: "Friend Request declined successfully."})
     } 
     catch (error) 
@@ -88,9 +98,8 @@ export async function unfriend(req: JWTRequest, res: Response)
 {
     try 
     {
-        const to_user_id = req.body.to_user_id;
-        const to_user = await db.getUser([to_user_id])
-        
+        const user_id = req.body.user_id;
+        const to_user = await db.getUserFromId([user_id])
         await db.unfriend([to_user.id, req.user?.userID]);
         res.status(200).send({message: "Successfully unfriended."});
     } 

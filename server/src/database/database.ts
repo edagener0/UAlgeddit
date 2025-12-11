@@ -210,6 +210,15 @@ class DatabaseHelper {
     return await this.executeQuery(query, params);
   }
 
+  public async getTotalUserFriendsByUserID(params: any[]): Promise<any>
+  {
+    const query = `
+    select count(*) as total_friends
+    from friend
+    where user_id = ?
+    `;
+    return (await this.executeQuery(query, params))[0]["total_friends"];
+  }
   public async acceptFriendshipRequest(params: any[]): Promise<any>
   {
     const query1 = `select * from friend_request where from_user_id = ? and to_user_id = ?`
@@ -269,6 +278,31 @@ class DatabaseHelper {
       throw new NotFound("User not found!")
     }
     return response[0]
+  }
+
+  public async areFriends(userId: number | string, otherUserId: number | string): Promise<boolean> 
+  {
+    const query = `
+      select 1
+      from friend
+      where (user_id = ? and friend_id = ?)
+        or (user_id = ? and friend_id = ?)
+      limit 1
+    `;
+    const rows = await this.executeQuery(query, [userId, otherUserId, otherUserId, userId]);
+    return rows.length > 0;
+  }
+
+  public async existsFriendRequest(fromUserId: number | string, toUserId: number | string): Promise<boolean> 
+  {
+    const query = `
+      select 1
+      from friend_request
+      where from_user_id = ? and to_user_id = ?
+      limit 1
+    `;
+    const rows = await this.executeQuery(query, [fromUserId, toUserId]);
+    return rows.length > 0;
   }
 
   public async updateUserProfile(params: any[]): Promise<any> 

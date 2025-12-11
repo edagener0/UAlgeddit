@@ -22,7 +22,6 @@ wsInstance.applyTo(chatRouter)
 
 setupChatWS()
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions))
@@ -31,8 +30,8 @@ app.use("/auth", authRouter);
 app.use("/post", postsRouter);
 app.use("/comment", commentsRouter);
 app.use("/friend", friendsRouter);
-app.use("/subgeddit", subgedditRouter)
-app.use("/chat", chatRouter)
+app.use("/subgeddit", subgedditRouter);
+app.use("/chat", chatRouter);
 app.use("/profile", profileRouter);
 
 

@@ -48,3 +48,15 @@ export const PROFILE_URL = `${URL}/profile`
 
 export const PROFILE_VIEW = `${PROFILE_URL}/view`
 export const PROFILE_UPDATE = `${PROFILE_URL}/update`
+
+export const FRIEND_URL = `${URL}/friend`
+
+export const FRIEND_ACCEPT = `${FRIEND_URL}/request/accept`
+
+export const FRIEND_DECLINE = `${FRIEND_URL}/request/decline`
+
+export const FRIEND_REQUEST_LIST = `${FRIEND_URL}/request/list`
+
+export const FRIEND_REQUEST = `${FRIEND_URL}/request/`
+
+export const FRIEND_UNFRIEND = `${FRIEND_URL}/unfriend/`

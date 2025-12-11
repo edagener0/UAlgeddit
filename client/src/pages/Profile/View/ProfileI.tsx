@@ -4,4 +4,7 @@ export default interface ProfileI {
     biography: string
     birthday: string
     karma: number
+    areFriends: boolean;
+    isFriendRequestPending: boolean;
+    totalFriends: number;
 }
