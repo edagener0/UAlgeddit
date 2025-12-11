@@ -39,6 +39,7 @@ export const SUBGEDDIT_LIST = `${SUBGEDDIT_URL}/list`
 
 export const SUBGEDDIT_DETAIL = `${SUBGEDDIT_URL}/detail`
 export const SUBGEDDIT_UPDATE = `${SUBGEDDIT_URL}/update`
+export const SUBGEDDIT_DELETE= `${SUBGEDDIT_URL}/delete`
 
 
 export const GLOBAL_CHAT_WS_URL = `ws://${DOMAIN}/chat/global`
