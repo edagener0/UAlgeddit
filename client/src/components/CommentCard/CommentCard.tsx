@@ -9,7 +9,7 @@ export default function CommentCard({comment, currentUserID, handleCommentDelete
 {
     return (
         <div className="comment-card">
-            <Link to="/profile" className="comment-header">User: {comment.username}</Link>
+            <Link to={`/profile/${comment.user_id}`} className="comment-header">User: {comment.username}</Link>
             <div className="comment-footer">
                 <p>{comment.content}</p>
             </div>
