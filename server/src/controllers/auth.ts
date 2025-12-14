@@ -29,7 +29,8 @@ export async function login(req: Request, res: Response)
     } 
     catch (error) 
     {
-        res.status(500).send({message: "Internal Server Error on login."})
+        res.status(500).send({message: "User Not Found!"})
+        return;
     }
     
     if (!user)
