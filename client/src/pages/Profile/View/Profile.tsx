@@ -145,7 +145,7 @@ export default function Profile({token, currentUserID}: {token: string | null, c
 
     useEffect(() => {
         fetchUser();
-    }, [])
+    }, [user_id])
     
     const isCurrentUser = currentUserID !== null && String(currentUserID) === user_id;
 
