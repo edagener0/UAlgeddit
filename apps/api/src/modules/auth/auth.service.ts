@@ -1,6 +1,18 @@
 import { randomUUID } from 'node:crypto';
-import type { AuthUser, LoginInput, RegisterInput } from '@ualgeddit/shared';
-import { ConflictError, NotFoundError, UnauthorizedError } from '../../common/errors/app-error.js';
+import type {
+  AuthUser,
+  ChangePasswordInput,
+  DeleteAccountInput,
+  LoginInput,
+  RegisterInput,
+} from '@ualgeddit/shared';
+import {
+  ConflictError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from '../../common/errors/app-error.js';
+import type { StorageService } from '../storage/storage.service.js';
 import type { TokenAuthenticator } from '../../common/middleware/authenticate.js';
 import type { AuthenticatedUser } from '../../common/http/types.js';
 import type { UsersRepository } from '../users/users.repository.js';
@@ -23,6 +35,7 @@ export class AuthService implements TokenAuthenticator {
     private readonly users: UsersRepository,
     private readonly hasher: PasswordHasher,
     private readonly tokens: TokenService,
+    private readonly storage: StorageService,
   ) {}
 
   async register(input: RegisterInput): Promise<AuthResult> {
@@ -45,6 +58,26 @@ export class AuthService implements TokenAuthenticator {
     return this.issue(user);
   }
 
+  /**
+   * Changes the password after verifying the current one. Every other session is
+   * revoked; the returned token keeps the current session signed in.
+   */
+  async changePassword(userId: number, input: ChangePasswordInput): Promise<AuthResult> {
+    await this.verifyPassword(userId, input.currentPassword, 'currentPassword');
+    const updated = await this.users.updatePassword(
+      userId,
+      await this.hasher.hash(input.newPassword),
+    );
+    return this.issue(updated);
+  }
+
+  /** Permanently deletes the account, its content and its uploaded files. */
+  async deleteAccount(userId: number, input: DeleteAccountInput): Promise<void> {
+    await this.verifyPassword(userId, input.password, 'password');
+    const orphanedFiles = await this.users.deleteAccount(userId);
+    await this.storage.deleteMany(orphanedFiles);
+  }
+
   /** Invalidates every token previously issued to the user. */
   async logout(userId: number): Promise<void> {
     await this.users.incrementTokenVersion(userId);
@@ -62,6 +95,15 @@ export class AuthService implements TokenAuthenticator {
     const user = await this.users.findAuthById(payload.sub);
     if (!user || user.tokenVersion !== payload.tv) return null;
     return { id: user.id, username: user.username };
+  }
+
+  /** Re-authentication for sensitive actions; a wrong password is reported on the form field. */
+  private async verifyPassword(userId: number, password: string, field: string) {
+    const user = await this.users.findById(userId);
+    if (!user) throw new NotFoundError('User');
+    if (!(await this.hasher.compare(password, user.passwordHash))) {
+      throw new ValidationError([{ path: field, message: 'Incorrect password' }]);
+    }
   }
 
   private getDummyHash(): Promise<string> {

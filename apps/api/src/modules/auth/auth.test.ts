@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, type Mocked } from 'vitest';
 import jwt from 'jsonwebtoken';
-import { ConflictError, UnauthorizedError } from '../../common/errors/app-error.js';
-import { mockOf } from '../../../test/mocks.js';
+import {
+  ConflictError,
+  UnauthorizedError,
+  ValidationError,
+} from '../../common/errors/app-error.js';
+import { mockOf, mockStorage } from '../../../test/mocks.js';
 import type { UsersRepository } from '../users/users.repository.js';
 import { AuthService } from './auth.service.js';
 import type { PasswordHasher } from './password-hasher.js';
@@ -51,6 +55,7 @@ describe('AuthService', () => {
   let users: Mocked<UsersRepository>;
   let tokens: TokenService;
   let service: AuthService;
+  let storage: ReturnType<typeof mockStorage>;
 
   beforeEach(() => {
     users = mockOf<UsersRepository>(
@@ -59,9 +64,12 @@ describe('AuthService', () => {
       'findAuthById',
       'findById',
       'incrementTokenVersion',
+      'updatePassword',
+      'deleteAccount',
     );
     tokens = new TokenService(SECRET, '1h');
-    service = new AuthService(users, fakeHasher, tokens);
+    storage = mockStorage();
+    service = new AuthService(users, fakeHasher, tokens, storage);
   });
 
   it('registers a new user with a hashed password', async () => {
@@ -127,5 +135,51 @@ describe('AuthService', () => {
   it('logout bumps the token version', async () => {
     await service.logout(7);
     expect(users.incrementTokenVersion).toHaveBeenCalledWith(7);
+  });
+
+  describe('sensitive account actions', () => {
+    const input = {
+      currentPassword: 'secret123',
+      newPassword: 'n3w-secret',
+      confirmPassword: 'n3w-secret',
+    };
+
+    it('changes the password, revoking other sessions, and issues a new token', async () => {
+      users.findById.mockResolvedValue(user as never);
+      users.updatePassword.mockResolvedValue({ ...user, tokenVersion: 3 } as never);
+
+      const result = await service.changePassword(7, input);
+
+      expect(users.updatePassword).toHaveBeenCalledWith(7, 'hashed:n3w-secret');
+      expect(tokens.verify(result.token)?.tv).toBe(3);
+    });
+
+    it('rejects a wrong current password on the form field', async () => {
+      users.findById.mockResolvedValue(user as never);
+      const error = await service
+        .changePassword(7, { ...input, currentPassword: 'nope' })
+        .catch((e: unknown) => e);
+      expect(error).toBeInstanceOf(ValidationError);
+      expect((error as ValidationError).details?.[0]?.path).toBe('currentPassword');
+      expect(users.updatePassword).not.toHaveBeenCalled();
+    });
+
+    it('deletes the account and its orphaned files after re-authentication', async () => {
+      users.findById.mockResolvedValue(user as never);
+      users.deleteAccount.mockResolvedValue(['/uploads/a.webp']);
+
+      await service.deleteAccount(7, { password: 'secret123' });
+
+      expect(users.deleteAccount).toHaveBeenCalledWith(7);
+      expect(storage.deleteMany).toHaveBeenCalledWith(['/uploads/a.webp']);
+    });
+
+    it('does not delete the account with a wrong password', async () => {
+      users.findById.mockResolvedValue(user as never);
+      await expect(service.deleteAccount(7, { password: 'nope' })).rejects.toBeInstanceOf(
+        ValidationError,
+      );
+      expect(users.deleteAccount).not.toHaveBeenCalled();
+    });
   });
 });

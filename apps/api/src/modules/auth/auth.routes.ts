@@ -11,5 +11,8 @@ export function createAuthRouter(
   router.post('/login', limits.perIp, limits.perAccount, controller.login);
   router.post('/logout', controller.logout);
   router.get('/me', requireAuth, controller.me);
+  // Sensitive actions require the current password and share the strict per-IP limit.
+  router.put('/password', requireAuth, limits.perIp, controller.changePassword);
+  router.delete('/account', requireAuth, limits.perIp, controller.deleteAccount);
   return router;
 }

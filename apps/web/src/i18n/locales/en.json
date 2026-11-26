@@ -52,7 +52,8 @@
       "signedInAs": "Signed in as",
       "profile": "Profile",
       "editProfile": "Edit profile",
-      "logOut": "Log out"
+      "logOut": "Log out",
+      "accountSettings": "Account settings"
     },
     "auth": {
       "loginTitle": "Log in",
@@ -255,6 +256,21 @@
       "notFoundText": "The page you are looking for doesn't exist or has been removed.",
       "backHome": "Back to home",
       "reload": "Reload UAlgeddit"
+    },
+    "settings": {
+      "title": "Account settings",
+      "passwordTitle": "Change password",
+      "passwordHint": "Changing your password signs you out on every other device.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "passwordChanged": "Password changed. Other sessions were signed out.",
+      "dangerTitle": "Delete account",
+      "dangerText": "Permanently deletes your profile, your communities, posts, comments, votes, friendships and uploaded images. This cannot be undone.",
+      "confirmWithPassword": "Enter your password to confirm",
+      "deleteButton": "Delete my account",
+      "deleteConfirmTitle": "Delete your account forever?",
+      "deleted": "Your account was deleted."
     }
   },
   "messages": {
@@ -310,6 +326,8 @@
     "Validation failed": "Validation failed",
     "Something went wrong": "Something went wrong",
     "Cross-origin request blocked": "Cross-origin request blocked",
-    "Password is too long (accented characters count double)": "Password is too long (accented characters count double)"
+    "Password is too long (accented characters count double)": "Password is too long (accented characters count double)",
+    "Incorrect password": "Incorrect password",
+    "The new password must be different from the current one": "The new password must be different from the current one"
   }
 }

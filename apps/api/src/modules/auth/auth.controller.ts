@@ -1,4 +1,10 @@
-import { loginSchema, registerSchema, type AuthResponse } from '@ualgeddit/shared';
+import {
+  changePasswordSchema,
+  deleteAccountSchema,
+  loginSchema,
+  registerSchema,
+  type AuthResponse,
+} from '@ualgeddit/shared';
 import type { Request, Response } from 'express';
 import { clearAuthCookie, setAuthCookie } from '../../common/http/auth-cookie.js';
 import { requireUser } from '../../common/http/types.js';
@@ -24,6 +30,20 @@ export class AuthController {
 
   logout = async (req: Request, res: Response) => {
     if (req.user) await this.auth.logout(req.user.id);
+    clearAuthCookie(res, this.cookie.secure);
+    res.status(204).end();
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    const input = changePasswordSchema.parse(req.body);
+    const { user, token } = await this.auth.changePassword(requireUser(req).id, input);
+    setAuthCookie(res, token, this.cookie.secure, this.cookie.maxAgeMs);
+    res.json({ user } satisfies AuthResponse);
+  };
+
+  deleteAccount = async (req: Request, res: Response) => {
+    const input = deleteAccountSchema.parse(req.body ?? {});
+    await this.auth.deleteAccount(requireUser(req).id, input);
     clearAuthCookie(res, this.cookie.secure);
     res.status(204).end();
   };

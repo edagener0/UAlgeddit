@@ -37,6 +37,27 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Password is required').max(200),
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: 'The new password must be different from the current one',
+    path: ['newPassword'],
+  });
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, 'Password is required').max(200),
+});
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
+
 /** The authenticated user, as returned by `/auth/me`, `/auth/login` and `/auth/register`. */
 export interface AuthUser {
   id: number;

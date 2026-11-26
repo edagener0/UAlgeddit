@@ -55,7 +55,7 @@ export function createContainer(
   };
 
   const services = {
-    auth: new AuthService(repositories.users, hasher, tokens),
+    auth: new AuthService(repositories.users, hasher, tokens, storage),
     users: new UsersService(repositories.users, repositories.friends, storage),
     friends: new FriendsService(repositories.friends, repositories.users),
     subgeddits: new SubgedditsService(repositories.subgeddits, storage),

@@ -1,5 +1,12 @@
-import type { AuthResponse, AuthUser, LoginInput, RegisterInput } from '@ualgeddit/shared';
-import { api, ApiError } from '@/lib/api-client';
+import type {
+  AuthResponse,
+  AuthUser,
+  ChangePasswordInput,
+  DeleteAccountInput,
+  LoginInput,
+  RegisterInput,
+} from '@ualgeddit/shared';
+import { api, ApiError, apiRequest } from '@/lib/api-client';
 
 export const authApi = {
   /** Resolves to `null` when the visitor is not signed in. */
@@ -14,4 +21,10 @@ export const authApi = {
   login: (input: LoginInput) => api.post<AuthResponse>('/auth/login', input),
   register: (input: RegisterInput) => api.post<AuthResponse>('/auth/register', input),
   logout: () => api.post<void>('/auth/logout'),
+};
+
+export const accountApi = {
+  changePassword: (input: ChangePasswordInput) => api.put<AuthResponse>('/auth/password', input),
+  deleteAccount: (input: DeleteAccountInput) =>
+    apiRequest<void>('/auth/account', { method: 'DELETE', body: input }),
 };

@@ -95,6 +95,14 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: 'settings/account',
+            ...page(() =>
+              import('./features/auth/account-settings-page').then((m) => ({
+                Component: m.AccountSettingsPage,
+              })),
+            ),
+          },
+          {
             path: 'friends',
             ...page(() =>
               import('./features/friends/friends-page').then((m) => ({ Component: m.FriendsPage })),

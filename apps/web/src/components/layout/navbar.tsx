@@ -1,4 +1,5 @@
 import {
+  KeyRound,
   LogIn,
   LogOut,
   Menu,
@@ -132,6 +133,14 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                       className={menuItemClasses}
                     >
                       <Settings className="size-4" aria-hidden /> {t('nav.editProfile')}
+                    </Link>
+                    <Link
+                      role="menuitem"
+                      to="/settings/account"
+                      onClick={close}
+                      className={menuItemClasses}
+                    >
+                      <KeyRound className="size-4" aria-hidden /> {t('nav.accountSettings')}
                     </Link>
                     <button
                       role="menuitem"

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AuthUser } from '@ualgeddit/shared';
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { authApi } from './api';
+import { accountApi, authApi } from './api';
 
 export const meQueryKey = ['auth', 'me'] as const;
 
@@ -67,4 +67,25 @@ export function useRequireAuth() {
     },
     [user, navigate, location],
   );
+}
+
+export function useChangePassword() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: accountApi.changePassword,
+    onSuccess: ({ user }) => client.setQueryData(meQueryKey, user),
+  });
+}
+
+export function useDeleteAccount() {
+  const client = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: accountApi.deleteAccount,
+    onSuccess: () => {
+      client.setQueryData(meQueryKey, null);
+      client.removeQueries({ predicate: (query) => query.queryKey[0] !== 'auth' });
+      void navigate('/', { replace: true });
+    },
+  });
 }

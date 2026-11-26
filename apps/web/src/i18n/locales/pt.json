@@ -52,7 +52,8 @@
       "signedInAs": "Sessão iniciada como",
       "profile": "Perfil",
       "editProfile": "Editar perfil",
-      "logOut": "Terminar sessão"
+      "logOut": "Terminar sessão",
+      "accountSettings": "Definições da conta"
     },
     "auth": {
       "loginTitle": "Entrar",
@@ -255,6 +256,21 @@
       "notFoundText": "A página que procuras não existe ou foi removida.",
       "backHome": "Voltar ao início",
       "reload": "Recarregar o UAlgeddit"
+    },
+    "settings": {
+      "title": "Definições da conta",
+      "passwordTitle": "Alterar palavra-passe",
+      "passwordHint": "Alterar a palavra-passe termina a sessão em todos os outros dispositivos.",
+      "currentPassword": "Palavra-passe atual",
+      "newPassword": "Nova palavra-passe",
+      "confirmPassword": "Confirmar nova palavra-passe",
+      "passwordChanged": "Palavra-passe alterada. As outras sessões foram terminadas.",
+      "dangerTitle": "Eliminar conta",
+      "dangerText": "Elimina permanentemente o teu perfil, as tuas comunidades, publicações, comentários, votos, amizades e imagens. Esta ação não pode ser desfeita.",
+      "confirmWithPassword": "Introduz a tua palavra-passe para confirmar",
+      "deleteButton": "Eliminar a minha conta",
+      "deleteConfirmTitle": "Eliminar a tua conta para sempre?",
+      "deleted": "A tua conta foi eliminada."
     }
   },
   "messages": {
@@ -310,6 +326,8 @@
     "Validation failed": "Dados inválidos",
     "Something went wrong": "Algo correu mal",
     "Cross-origin request blocked": "Pedido de outra origem bloqueado",
-    "Password is too long (accented characters count double)": "A palavra-passe é demasiado longa (caracteres acentuados contam a dobrar)"
+    "Password is too long (accented characters count double)": "A palavra-passe é demasiado longa (caracteres acentuados contam a dobrar)",
+    "Incorrect password": "Palavra-passe incorreta",
+    "The new password must be different from the current one": "A nova palavra-passe tem de ser diferente da atual"
   }
 }
