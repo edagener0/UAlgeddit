@@ -11,7 +11,12 @@ import type { Container } from './container.js';
 import { optionalAuth } from './common/middleware/authenticate.js';
 import { errorHandler, notFoundHandler } from './common/middleware/error-handler.js';
 import { originCheck } from './common/middleware/origin-check.js';
-import { apiRateLimit, authRateLimit } from './common/middleware/rate-limit.js';
+import {
+  apiRateLimit,
+  authRateLimit,
+  loginAccountRateLimit,
+  writeRateLimit,
+} from './common/middleware/rate-limit.js';
 import { buildOpenApiDocument } from './docs/openapi.js';
 import { createAuthRouter } from './modules/auth/auth.routes.js';
 import { createChatRouter } from './modules/chat/chat.routes.js';
@@ -104,7 +109,14 @@ export function createApp(env: Env, container: Container, logger: Logger): Expre
   api.use(apiRateLimit(env.RATE_LIMIT_ENABLED));
   api.use(originCheck(env.CORS_ORIGINS));
   api.use(optionalAuth(services.auth));
-  api.use('/auth', createAuthRouter(controllers.auth, authRateLimit(env.RATE_LIMIT_ENABLED)));
+  api.use(writeRateLimit(env.RATE_LIMIT_ENABLED));
+  api.use(
+    '/auth',
+    createAuthRouter(controllers.auth, {
+      perIp: authRateLimit(env.RATE_LIMIT_ENABLED),
+      perAccount: loginAccountRateLimit(env.RATE_LIMIT_ENABLED),
+    }),
+  );
   api.use('/users', createUsersRouter(controllers.users));
   api.use('/subgeddits', createSubgedditsRouter(controllers.subgeddits));
   api.use('/posts', createPostsRouter(controllers.posts, controllers.comments));

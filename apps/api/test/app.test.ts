@@ -5,6 +5,7 @@ import { createApp } from '../src/app.js';
 import { loadEnv } from '../src/config/env.js';
 import { createContainer, type Container } from '../src/container.js';
 import type { Database } from '../src/lib/prisma.js';
+import { UnauthorizedError } from '../src/common/errors/app-error.js';
 import { mockStorage } from './mocks.js';
 
 /** HTTP-level tests: real Express app and middleware, services stubbed, no database. */
@@ -172,5 +173,47 @@ describe('HTTP API', () => {
     vi.spyOn(container.services.posts, 'list').mockRejectedValue(new Error('secret stack'));
     const { body } = await request(app).get('/api/posts').expect(500);
     expect(JSON.stringify(body)).not.toContain('secret');
+  });
+});
+
+describe('rate limiting', () => {
+  const env = loadEnv({ ...process.env, RATE_LIMIT_ENABLED: 'true' });
+  const logger = pino({ level: 'silent' });
+
+  const build = () => {
+    const container = createContainer(env, { $queryRaw: vi.fn() } as unknown as Database, logger, {
+      storage: mockStorage(),
+    });
+    return { container, app: createApp(env, container, logger) };
+  };
+
+  it('throttles failed logins per account, independently of the IP', async () => {
+    const { container, app } = build();
+    vi.spyOn(container.services.auth, 'login').mockRejectedValue(
+      new UnauthorizedError('Invalid username or password'),
+    );
+    const attempt = (username: string) =>
+      request(app).post('/api/auth/login').send({ username, password: 'wrong-password1' });
+
+    for (let i = 0; i < 10; i++) await attempt('victim').expect(401);
+    await attempt('VICTIM').expect(429);
+    await attempt('someone_else').expect(401);
+  });
+
+  it('limits state-changing requests per user', async () => {
+    const { container, app } = build();
+    vi.spyOn(container.services.auth, 'authenticate').mockResolvedValue({
+      id: 7,
+      username: 'spammer',
+    });
+    vi.spyOn(container.services.posts, 'vote').mockResolvedValue({ score: 1, myVote: 1 });
+    const vote = () =>
+      request(app).put('/api/posts/1/vote').set('Cookie', 'ualgeddit_token=t').send({ value: 1 });
+
+    for (let i = 0; i < 60; i++) await vote().expect(200);
+    await vote().expect(429);
+    // Reading is not affected.
+    vi.spyOn(container.services.posts, 'get').mockResolvedValue({} as never);
+    await request(app).get('/api/posts/1').set('Cookie', 'ualgeddit_token=t').expect(200);
   });
 });
