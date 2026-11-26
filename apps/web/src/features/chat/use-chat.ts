@@ -5,6 +5,8 @@ import { api } from '@/lib/api-client';
 
 export type ChatStatus = 'connecting' | 'open' | 'closed';
 
+const SESSION_EXPIRED = 4401;
+
 function socketUrl() {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   return `${protocol}//${window.location.host}/api/chat/ws`;
@@ -45,9 +47,10 @@ export function useChat() {
         if (data.type === 'presence') setOnline(data.online);
         if (data.type === 'error') setLastError(data.message);
       };
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         setStatus('closed');
-        if (disposed) return;
+        // 4401: the session was revoked or expired; reconnecting would only fail.
+        if (disposed || event.code === SESSION_EXPIRED) return;
         attempt += 1;
         timer = setTimeout(connect, Math.min(1000 * 2 ** attempt, 15_000));
       };

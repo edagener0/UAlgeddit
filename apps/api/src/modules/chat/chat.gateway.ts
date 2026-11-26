@@ -14,10 +14,16 @@ export const CHAT_WS_PATH = '/api/chat/ws';
 const HEARTBEAT_MS = 30_000;
 const RATE_WINDOW_MS = 5_000;
 const RATE_MAX_MESSAGES = 5;
+/** Simultaneous sockets per user (tabs/devices); more are refused. */
+const MAX_CONNECTIONS_PER_USER = 5;
+/** Close code sent when the session behind a socket is revoked or expires. */
+const SESSION_EXPIRED = 4401;
 
 interface Client {
   socket: WebSocket;
   user: AuthenticatedUser;
+  /** Kept to re-validate the session periodically (logout revokes it). */
+  token: string;
   alive: boolean;
   sentAt: number[];
 }
@@ -69,11 +75,17 @@ export class ChatGateway {
       return;
     }
 
-    this.wss.handleUpgrade(req, socket, head, (ws) => this.onConnection(ws, user));
+    const open = [...this.clients].filter((client) => client.user.id === user.id).length;
+    if (open >= MAX_CONNECTIONS_PER_USER) {
+      this.reject(socket, 429, 'Too Many Requests');
+      return;
+    }
+
+    this.wss.handleUpgrade(req, socket, head, (ws) => this.onConnection(ws, user, token!));
   }
 
-  private onConnection(socket: WebSocket, user: AuthenticatedUser) {
-    const client: Client = { socket, user, alive: true, sentAt: [] };
+  private onConnection(socket: WebSocket, user: AuthenticatedUser, token: string) {
+    const client: Client = { socket, user, token, alive: true, sentAt: [] };
     this.clients.add(client);
     this.broadcastPresence();
 
@@ -140,6 +152,7 @@ export class ChatGateway {
     if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(event));
   }
 
+  /** Drops dead connections and sockets whose session was revoked (logout) or expired. */
   private checkHeartbeats() {
     for (const client of this.clients) {
       if (!client.alive) {
@@ -148,6 +161,12 @@ export class ChatGateway {
       }
       client.alive = false;
       client.socket.ping();
+      void this.authenticator
+        .authenticate(client.token)
+        .catch(() => null)
+        .then((user) => {
+          if (!user) client.socket.close(SESSION_EXPIRED, 'Session expired');
+        });
     }
   }
 
