@@ -1,3 +1,6 @@
+# Full UAlgeddit stack: PostgreSQL + API + web (nginx).
+#   make up      -> build and start everything on http://localhost:8080
+#   make dev     -> only starts `db`; the API and web run locally with hot reload
 name: ualgeddit
 
 services:
@@ -18,5 +21,41 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: ualgeddit-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ualgeddit}:${POSTGRES_PASSWORD:-ualgeddit}@db:5432/${POSTGRES_DB:-ualgeddit}?schema=public
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (run `make env`)}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CORS_ORIGINS: ${PUBLIC_URL:-http://localhost:8080}
+      # Set to true when the site is served over HTTPS.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      # nginx (web) sits in front of the API.
+      TRUST_PROXY: 1
+    volumes:
+      - uploads:/app/apps/api/uploads
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: ualgeddit-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - '${WEB_PORT:-8080}:8080'
+
 volumes:
   pgdata:
+  uploads:
