@@ -1,0 +1,39 @@
+{
+  "name": "ualgeddit",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A Reddit-like community platform built with React, Express, Prisma and PostgreSQL.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,magenta \"npm run dev -w @ualgeddit/api\" \"npm run dev -w @ualgeddit/web\"",
+    "build": "npm run build -w @ualgeddit/api && npm run build -w @ualgeddit/web",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^9.2.5",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.74.0"
+  },
+  "type": "module"
+}

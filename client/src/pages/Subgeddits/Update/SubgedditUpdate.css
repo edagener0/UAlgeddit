@@ -1,7 +1,0 @@
-#subgeddit-update-form, #subgeddit-update-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-}
