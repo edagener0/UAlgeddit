@@ -116,7 +116,7 @@ build: ## Build the API and the web client
 .PHONY: up
 up: env ## Build and start the full stack on http://localhost:8080
 	$(COMPOSE) up -d --build --wait
-	@echo "UAlgeddit is running on http://localhost:$${WEB_PORT:-8080} (API docs: /api/docs)"
+	@echo "UAlgeddit is running on http://localhost:$${WEB_PORT:-8080} (API docs are only served in development: make dev)"
 
 .PHONY: down
 down: ## Stop the stack (keeps data)

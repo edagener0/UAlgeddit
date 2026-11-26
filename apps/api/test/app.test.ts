@@ -48,6 +48,13 @@ describe('HTTP API', () => {
     await request(app).get('/api/docs/').expect(200).expect('Content-Type', /html/);
   });
 
+  it('does not expose the API docs in production', async () => {
+    const prodEnv = loadEnv({ ...process.env, NODE_ENV: 'production' });
+    const prodApp = createApp(prodEnv, container, logger);
+    await request(prodApp).get('/api/docs/openapi.json').expect(404);
+    await request(prodApp).get('/api/docs/').expect(404);
+  });
+
   it('returns structured validation errors', async () => {
     const { body } = await request(app)
       .post('/api/auth/register')

@@ -24,6 +24,21 @@ describe('loadEnv', () => {
     expect(env.COOKIE_SECURE).toBe(true);
   });
 
+  it('enables the API docs outside production only', () => {
+    expect(loadEnv({ ...base, NODE_ENV: 'development' }).API_DOCS_ENABLED).toBe(true);
+    expect(loadEnv({ ...base, NODE_ENV: 'test' }).API_DOCS_ENABLED).toBe(true);
+    expect(loadEnv({ ...base, NODE_ENV: 'production' }).API_DOCS_ENABLED).toBe(false);
+  });
+
+  it('lets API_DOCS_ENABLED override the default', () => {
+    expect(
+      loadEnv({ ...base, NODE_ENV: 'production', API_DOCS_ENABLED: 'true' }).API_DOCS_ENABLED,
+    ).toBe(true);
+    expect(
+      loadEnv({ ...base, NODE_ENV: 'development', API_DOCS_ENABLED: 'false' }).API_DOCS_ENABLED,
+    ).toBe(false);
+  });
+
   it('rejects short JWT secrets with a readable message', () => {
     expect(() => loadEnv({ ...base, JWT_SECRET: 'short' })).toThrow(/JWT_SECRET/);
   });

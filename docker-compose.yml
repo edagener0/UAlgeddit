@@ -41,6 +41,8 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       # nginx (web) sits in front of the API.
       TRUST_PROXY: 1
+      # Swagger UI is a development tool and is not exposed in production.
+      API_DOCS_ENABLED: 'false'
     volumes:
       - uploads:/app/apps/api/uploads
 

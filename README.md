@@ -72,10 +72,8 @@ make up
 
 `make up` creates a `.env` with a random `JWT_SECRET`, builds the images, applies the database migrations and starts:
 
-| Service  | URL                                                              |
-| -------- | ---------------------------------------------------------------- |
-| Web app  | [http://localhost:8080](http://localhost:8080)                   |
-| API docs | [http://localhost:8080/api/docs](http://localhost:8080/api/docs) |
+The web app is served on [http://localhost:8080](http://localhost:8080). This is the production configuration, so
+the Swagger UI is **not** exposed; use the development setup below to browse the API docs.
 
 The application starts **empty**: register an account and create the first community. If you want demo content
 for local testing, run `make docker-seed` (this **wipes** the database first). Stop everything with `make down`.
@@ -142,7 +140,10 @@ Run `make help` for the full list.
 
 ## API documentation
 
-Interactive Swagger UI is served by the API at **`/api/docs`** (raw spec: `/api/docs/openapi.json`). Request schemas are
+In development (`make dev`), interactive Swagger UI is served at
+**[http://localhost:3000/api/docs](http://localhost:3000/api/docs)** (raw spec: `/api/docs/openapi.json`). The docs are
+**disabled in production** (`NODE_ENV=production`, as in the Docker stack); set `API_DOCS_ENABLED=true` to force them on.
+Request schemas are
 generated from the same Zod schemas used for validation, so the documentation cannot drift from the code. See
 [docs/api.md](docs/api.md) for an overview, the error format and the WebSocket protocol.
 
@@ -166,17 +167,18 @@ GitHub Actions run on every push and pull request:
 Docker Compose reads the root `.env` (see [`.env.example`](.env.example)); the API in development reads
 [`apps/api/.env`](apps/api/.env.example). `make env` creates both with random secrets.
 
-| Variable             | Default                 | Description                                             |
-| -------------------- | ----------------------- | ------------------------------------------------------- |
-| `JWT_SECRET`         | _(required)_            | ≥ 32 random characters used to sign session tokens      |
-| `JWT_EXPIRES_IN`     | `7d`                    | Session lifetime (`15m`, `12h`, `7d`…)                  |
-| `DATABASE_URL`       | local PostgreSQL        | PostgreSQL connection string                            |
-| `CORS_ORIGINS`       | `http://localhost:5173` | Comma-separated browser origins allowed to call the API |
-| `COOKIE_SECURE`      | `false`                 | Set to `true` when served over HTTPS                    |
-| `TRUST_PROXY`        | `0`                     | Number of reverse proxies in front of the API           |
-| `UPLOAD_DIR`         | `uploads`               | Where uploaded images are stored                        |
-| `API_PORT`           | `3000`                  | API port                                                |
-| `RATE_LIMIT_ENABLED` | `true`                  | Toggle rate limiting                                    |
+| Variable             | Default                     | Description                                             |
+| -------------------- | --------------------------- | ------------------------------------------------------- |
+| `JWT_SECRET`         | _(required)_                | ≥ 32 random characters used to sign session tokens      |
+| `JWT_EXPIRES_IN`     | `7d`                        | Session lifetime (`15m`, `12h`, `7d`…)                  |
+| `DATABASE_URL`       | local PostgreSQL            | PostgreSQL connection string                            |
+| `CORS_ORIGINS`       | `http://localhost:5173`     | Comma-separated browser origins allowed to call the API |
+| `COOKIE_SECURE`      | `false`                     | Set to `true` when served over HTTPS                    |
+| `TRUST_PROXY`        | `0`                         | Number of reverse proxies in front of the API           |
+| `UPLOAD_DIR`         | `uploads`                   | Where uploaded images are stored                        |
+| `API_PORT`           | `3000`                      | API port                                                |
+| `RATE_LIMIT_ENABLED` | `true`                      | Toggle rate limiting                                    |
+| `API_DOCS_ENABLED`   | `true` except in production | Serve Swagger UI at `/api/docs`                         |
 
 ## Documentation
 

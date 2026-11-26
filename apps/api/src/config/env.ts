@@ -27,9 +27,13 @@ const envSchema = z.object({
   TRUST_PROXY: z.coerce.number().int().min(0).default(0),
   UPLOAD_DIR: z.string().default('uploads'),
   RATE_LIMIT_ENABLED: booleanString.default(true),
+  /** Swagger UI + OpenAPI JSON. Defaults to on outside production and off in production. */
+  API_DOCS_ENABLED: booleanString.optional(),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export type Env = Omit<z.infer<typeof envSchema>, 'API_DOCS_ENABLED'> & {
+  API_DOCS_ENABLED: boolean;
+};
 
 /** Parses and validates `process.env`, failing fast with a readable message. */
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
@@ -40,5 +44,6 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
       .join('\n');
     throw new Error(`Invalid environment configuration:\n${issues}`);
   }
-  return result.data;
+  const { API_DOCS_ENABLED, ...env } = result.data;
+  return { ...env, API_DOCS_ENABLED: API_DOCS_ENABLED ?? env.NODE_ENV !== 'production' };
 }

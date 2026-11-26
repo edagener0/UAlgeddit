@@ -2,8 +2,12 @@
 
 The complete, interactive reference is generated from the code and served by the API:
 
-- **Swagger UI**: `http://localhost:3000/api/docs` (dev) or `http://localhost:8080/api/docs` (Docker)
-- **OpenAPI 3.1 JSON**: `/api/docs/openapi.json`
+- **Swagger UI**: `http://localhost:3000/api/docs`
+- **OpenAPI 3.1 JSON**: `http://localhost:3000/api/docs/openapi.json`
+
+The documentation is only available **in development**. When `NODE_ENV=production` (the Docker stack) the
+`/api/docs` routes are not registered and return `404`, so the full API surface is not advertised publicly. Set
+`API_DOCS_ENABLED=true` (or `false`) to override the default.
 
 All endpoints live under `/api`, accept and return JSON (except uploads, which are `multipart/form-data`).
 

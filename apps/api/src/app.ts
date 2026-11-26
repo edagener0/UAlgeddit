@@ -72,20 +72,23 @@ export function createApp(env: Env, container: Container, logger: Logger): Expre
     }),
   );
 
-  // API documentation (Swagger UI needs inline scripts, so relax CSP for this route only).
-  const openApiDocument = buildOpenApiDocument();
-  app.get('/api/docs/openapi.json', (_req, res) => {
-    res.json(openApiDocument);
-  });
-  app.use(
-    '/api/docs',
-    helmet({ contentSecurityPolicy: false }),
-    swaggerUi.serve,
-    swaggerUi.setup(openApiDocument, {
-      customSiteTitle: 'UAlgeddit API',
-      swaggerOptions: { withCredentials: true, persistAuthorization: true },
-    }),
-  );
+  // API documentation, development only by default (Swagger UI needs inline scripts,
+  // so CSP is relaxed for this route only). In production the routes do not exist (404).
+  if (env.API_DOCS_ENABLED) {
+    const openApiDocument = buildOpenApiDocument();
+    app.get('/api/docs/openapi.json', (_req, res) => {
+      res.json(openApiDocument);
+    });
+    app.use(
+      '/api/docs',
+      helmet({ contentSecurityPolicy: false }),
+      swaggerUi.serve,
+      swaggerUi.setup(openApiDocument, {
+        customSiteTitle: 'UAlgeddit API',
+        swaggerOptions: { withCredentials: true, persistAuthorization: true },
+      }),
+    );
+  }
 
   app.get('/api/health', async (_req, res) => {
     try {

@@ -136,6 +136,7 @@ replies keep their place, shown as "[deleted]"; deleted leaves are pruned from t
 ### Operational concerns
 
 - Configuration is validated with zod at startup (`config/env.ts`): the API refuses to start with a weak secret.
+- Swagger UI (`/api/docs`) is only mounted outside production (`API_DOCS_ENABLED`).
 - `GET /api/health` checks the database and is used by Docker health checks.
 - `SIGTERM`/`SIGINT` close the WebSocket server, stop accepting connections, then disconnect Prisma.
 

@@ -34,4 +34,5 @@ make down    # stop (volumes are kept)
 - [ ] Do not publish the PostgreSQL port (remove `ports` from the `db` service).
 - [ ] Adjust `TRUST_PROXY` to the number of proxies in front of the API so rate limiting sees real client IPs.
 - [ ] Back up the `pgdata` and `uploads` volumes.
+- [ ] Keep `API_DOCS_ENABLED` unset or `false` (Swagger UI is disabled in production by default).
 - [ ] Never run the seed against production (it refuses unless `SEED_FORCE=true`).

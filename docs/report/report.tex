@@ -235,7 +235,8 @@ chat_messages(id, content, author_id -> users, created_at)
 
 \subsection{API}
 
-The API is documented with OpenAPI~3.1 and served through Swagger UI at \texttt{/api/docs}. Request schemas are
+The API is documented with OpenAPI~3.1 and served through Swagger UI at \texttt{/api/docs} in development only;
+in production the documentation routes are not registered, so the API surface is not advertised. Request schemas are
 generated from the shared Zod schemas, so the documentation cannot drift from the validation code.
 Table~\ref{tab:api} summarises the main resources.
 
