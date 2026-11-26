@@ -111,7 +111,7 @@ jobs:
         run: npm run db:deploy -w @ualgeddit/api
       - name: Check the schema matches the migrations
         working-directory: apps/api
-        run: npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
+        run: npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
       - name: Seed
         run: npm run db:seed -w @ualgeddit/api
 

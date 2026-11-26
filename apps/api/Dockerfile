@@ -5,8 +5,6 @@ ARG NODE_VERSION=22
 
 FROM node:${NODE_VERSION}-alpine AS base
 WORKDIR /app
-# Prisma's query engine needs OpenSSL.
-RUN apk add --no-cache openssl
 
 # ---- Install every dependency (including dev) for the build -------------------
 FROM base AS deps
@@ -37,7 +35,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci -w @ualgeddit/api --omit=dev
 WORKDIR /app/apps/api
 COPY apps/api/prisma ./prisma
 COPY apps/api/prisma.config.ts ./
-RUN npx prisma generate
+RUN /app/node_modules/.bin/prisma generate
 COPY --from=build /app/apps/api/dist ./dist
 COPY apps/api/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

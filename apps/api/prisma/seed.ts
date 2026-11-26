@@ -10,11 +10,12 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { faker } from '@faker-js/faker';
-import { PrismaClient, type User } from '@prisma/client';
+import type { User } from '@prisma/client';
+import { createPrismaClient } from '../src/lib/prisma.js';
 import bcrypt from 'bcryptjs';
 import { hotRank } from '../src/common/utils/votes.js';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient(process.env.DATABASE_URL ?? '');
 const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR ?? 'uploads');
 const PASSWORD = process.env.SEED_PASSWORD ?? 'Password123';
 
