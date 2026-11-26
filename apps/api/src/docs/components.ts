@@ -36,10 +36,10 @@ export const schemas = {
   },
   AuthResponse: {
     type: 'object',
-    required: ['user', 'token'],
+    required: ['user'],
+    description: 'The session token is set as an httpOnly cookie (Set-Cookie), never in the body.',
     properties: {
       user: { $ref: '#/components/schemas/UserSummary' },
-      token: { type: 'string', description: 'JWT (also set as the httpOnly auth cookie)' },
     },
   },
   UserProfile: {

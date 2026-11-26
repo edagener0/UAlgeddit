@@ -27,7 +27,7 @@ describe('LoginPage', () => {
   it('signs in and redirects', async () => {
     mockFetch((url) =>
       url.endsWith('/auth/login')
-        ? jsonResponse({ user: { id: 1, username: 'demo', avatarUrl: null }, token: 't' })
+        ? jsonResponse({ user: { id: 1, username: 'demo', avatarUrl: null } })
         : jsonResponse({ error: { code: 'UNAUTHORIZED', message: 'x' } }, 401),
     );
     renderWithProviders(<LoginPage />, { path: '/login', route: '/login' });

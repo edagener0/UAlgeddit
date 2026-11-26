@@ -84,14 +84,10 @@ describe('durationToMs', () => {
 });
 
 describe('auth cookie helpers', () => {
-  it('prefers the cookie over the Authorization header', () => {
-    expect(extractToken({ [AUTH_COOKIE_NAME]: 'cookie' }, 'Bearer header')).toBe('cookie');
-  });
-
-  it('falls back to a bearer token', () => {
-    expect(extractToken({}, 'Bearer abc')).toBe('abc');
-    expect(extractToken({}, 'Basic abc')).toBeNull();
-    expect(extractToken(undefined, undefined)).toBeNull();
+  it('reads the token from the httpOnly cookie only', () => {
+    expect(extractToken({ [AUTH_COOKIE_NAME]: 'cookie' })).toBe('cookie');
+    expect(extractToken({ other: 'x' })).toBeNull();
+    expect(extractToken(undefined)).toBeNull();
   });
 
   it('parses raw cookie headers', () => {

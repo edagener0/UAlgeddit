@@ -1,11 +1,17 @@
 import { randomUUID } from 'node:crypto';
-import type { AuthResponse, AuthUser, LoginInput, RegisterInput } from '@ualgeddit/shared';
+import type { AuthUser, LoginInput, RegisterInput } from '@ualgeddit/shared';
 import { ConflictError, NotFoundError, UnauthorizedError } from '../../common/errors/app-error.js';
 import type { TokenAuthenticator } from '../../common/middleware/authenticate.js';
 import type { AuthenticatedUser } from '../../common/http/types.js';
 import type { UsersRepository } from '../users/users.repository.js';
 import type { PasswordHasher } from './password-hasher.js';
 import type { TokenService } from './token.service.js';
+
+/** Internal result: the controller puts `token` in an httpOnly cookie, never in the body. */
+export interface AuthResult {
+  user: AuthUser;
+  token: string;
+}
 
 type UserRecord = { id: number; username: string; avatarUrl: string | null; tokenVersion: number };
 
@@ -19,7 +25,7 @@ export class AuthService implements TokenAuthenticator {
     private readonly tokens: TokenService,
   ) {}
 
-  async register(input: RegisterInput): Promise<AuthResponse> {
+  async register(input: RegisterInput): Promise<AuthResult> {
     if (await this.users.findByUsername(input.username)) {
       throw new ConflictError('Username is already taken');
     }
@@ -28,7 +34,7 @@ export class AuthService implements TokenAuthenticator {
     return this.issue(user);
   }
 
-  async login(input: LoginInput): Promise<AuthResponse> {
+  async login(input: LoginInput): Promise<AuthResult> {
     const user = await this.users.findByUsername(input.username);
     // Always run bcrypt so response time does not reveal whether the user exists.
     const valid = await this.hasher.compare(
@@ -63,7 +69,7 @@ export class AuthService implements TokenAuthenticator {
     return this.dummyHash;
   }
 
-  private issue(user: UserRecord): AuthResponse {
+  private issue(user: UserRecord): AuthResult {
     const token = this.tokens.sign({
       sub: user.id,
       username: user.username,

@@ -96,13 +96,20 @@ describe('HTTP API', () => {
       .post('/api/auth/login')
       .send({ username: 'alice', password: 'secret123' })
       .expect(200);
+    expect(res.body).toEqual({ user: { id: 1, username: 'alice', avatarUrl: null } });
     const cookie = String(res.headers['set-cookie']);
     expect(cookie).toMatch(/ualgeddit_token=jwt-token/);
     expect(cookie).toMatch(/HttpOnly/);
     expect(cookie).toMatch(/SameSite=Lax/);
   });
 
-  it('resolves the user from a bearer token', async () => {
+  it('ignores Authorization headers (cookie-only authentication)', async () => {
+    const authenticate = vi.spyOn(container.services.auth, 'authenticate');
+    await request(app).get('/api/auth/me').set('Authorization', 'Bearer stolen').expect(401);
+    expect(authenticate).not.toHaveBeenCalled();
+  });
+
+  it('resolves the user from the session cookie', async () => {
     signIn();
     vi.spyOn(container.services.auth, 'me').mockResolvedValue({
       id: 1,
@@ -111,7 +118,7 @@ describe('HTTP API', () => {
     });
     await request(app)
       .get('/api/auth/me')
-      .set('Authorization', 'Bearer whatever')
+      .set('Cookie', 'ualgeddit_token=whatever')
       .expect(200, { id: 1, username: 'alice', avatarUrl: null });
   });
 
@@ -123,12 +130,12 @@ describe('HTTP API', () => {
 
     await request(app)
       .put('/api/posts/9/vote')
-      .set('Authorization', 'Bearer t')
+      .set('Cookie', 'ualgeddit_token=t')
       .send({ value: 5 })
       .expect(400);
     await request(app)
       .put('/api/posts/9/vote')
-      .set('Authorization', 'Bearer t')
+      .set('Cookie', 'ualgeddit_token=t')
       .send({ value: 1 })
       .expect(200, { score: 3, myVote: 1 });
     expect(vote).toHaveBeenCalledWith(9, 1, 1);
@@ -138,7 +145,7 @@ describe('HTTP API', () => {
     signIn();
     await request(app)
       .post('/api/posts')
-      .set('Authorization', 'Bearer t')
+      .set('Cookie', 'ualgeddit_token=t')
       .field('subgedditId', '1')
       .field('title', 'x')
       .attach('images', Buffer.from('<svg/>'), { filename: 'x.svg', contentType: 'image/svg+xml' })

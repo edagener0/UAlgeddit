@@ -62,7 +62,7 @@ export class ChatGateway {
       return;
     }
 
-    const token = extractToken(parseCookieHeader(req.headers.cookie), req.headers.authorization);
+    const token = extractToken(parseCookieHeader(req.headers.cookie));
     const user = token ? await this.authenticator.authenticate(token).catch(() => null) : null;
     if (!user) {
       this.reject(socket, 401, 'Unauthorized');
