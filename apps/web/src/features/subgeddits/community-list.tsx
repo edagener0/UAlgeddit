@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { SubgedditIcon } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/feedback';
-import { pluralize } from '@/lib/utils';
 import { useSubgeddits } from './hooks';
 
 /** "Popular communities" list used by the sidebars. */
@@ -12,6 +12,7 @@ export function CommunityList({
   limit?: number;
   onNavigate?: () => void;
 }) {
+  const { t } = useTranslation();
   const { data, isPending } = useSubgeddits({ pageSize: limit });
   if (isPending) {
     return (
@@ -35,7 +36,7 @@ export function CommunityList({
             <span className="min-w-0">
               <span className="block truncate text-sm font-medium">g/{subgeddit.name}</span>
               <span className="block text-xs text-fg-muted">
-                {pluralize(subgeddit.postCount, 'post')}
+                {t('common.posts', { count: subgeddit.postCount })}
               </span>
             </span>
           </Link>

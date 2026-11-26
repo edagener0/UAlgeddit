@@ -1,5 +1,6 @@
 import { Compass, Home, MessagesSquare, Plus, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { useFriendRequests } from '@/features/friends/hooks';
@@ -45,6 +46,7 @@ function Item({
 }
 
 function FriendsItem({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useTranslation();
   const requests = useFriendRequests();
   return (
     <Item
@@ -53,21 +55,22 @@ function FriendsItem({ onNavigate }: { onNavigate?: () => void }) {
       badge={requests.data?.received.length}
       onNavigate={onNavigate}
     >
-      Friends
+      {t('nav.friends')}
     </Item>
   );
 }
 
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useTranslation();
   const { user } = useCurrentUser();
   return (
-    <nav aria-label="Main" className="space-y-6">
+    <nav aria-label={t('nav.main')} className="space-y-6">
       <div className="space-y-0.5">
         <Item to="/" icon={<Home className="size-5" aria-hidden />} onNavigate={onNavigate}>
-          Home
+          {t('nav.home')}
         </Item>
         <Item to="/g" icon={<Compass className="size-5" aria-hidden />} onNavigate={onNavigate}>
-          Explore communities
+          {t('nav.explore')}
         </Item>
         {user && (
           <>
@@ -76,7 +79,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               icon={<MessagesSquare className="size-5" aria-hidden />}
               onNavigate={onNavigate}
             >
-              Global chat
+              {t('nav.chat')}
             </Item>
             <FriendsItem onNavigate={onNavigate} />
           </>
@@ -84,12 +87,14 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       <div className="border-t border-line pt-4">
         <div className="flex items-center justify-between px-3 pb-2">
-          <h2 className="text-xs font-bold tracking-wider text-fg-muted uppercase">Communities</h2>
+          <h2 className="text-xs font-bold tracking-wider text-fg-muted uppercase">
+            {t('nav.communities')}
+          </h2>
           {user && (
             <NavLink
               to="/g/new"
               onClick={onNavigate}
-              aria-label="Create community"
+              aria-label={t('common.createCommunity')}
               className="text-fg-muted hover:text-fg"
             >
               <Plus className="size-4" aria-hidden />

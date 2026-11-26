@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 import { useId } from 'react';
+import { translateMessage } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 const control =
@@ -46,7 +47,7 @@ export function Field({ label, error, hint, children }: FieldProps) {
       {children({ id, 'aria-invalid': error ? true : undefined, 'aria-describedby': describedBy })}
       {error ? (
         <p id={`${id}-error`} role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {error}
+          {translateMessage(error)}
         </p>
       ) : (
         hint && (

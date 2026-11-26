@@ -3,6 +3,7 @@ import { createSubgedditSchema, subgedditNameSchema } from '@ualgeddit/shared';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Navigate, useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { SingleImagePicker } from '@/components/image-picker';
@@ -23,6 +24,7 @@ type FormInput = z.input<typeof formSchema>;
 type FormOutput = z.output<typeof formSchema>;
 
 function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const create = useCreateSubgeddit();
   const update = useUpdateSubgeddit(existing?.name ?? '');
@@ -48,7 +50,11 @@ function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
   const onSubmit = handleSubmit((values) => {
     const options = {
       onSuccess: (subgeddit: SubgedditDto) => {
-        toast.success(existing ? 'Community updated' : `g/${subgeddit.name} created`);
+        toast.success(
+          existing
+            ? t('communities.updated')
+            : t('communities.createdToast', { name: subgeddit.name }),
+        );
         void navigate(`/g/${subgeddit.name}`);
       },
       onError: (error: unknown) => applyServerErrors(error, setError, ['name', 'description']),
@@ -72,17 +78,19 @@ function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="text-2xl font-bold">
-        {existing ? `Edit g/${existing.name}` : 'Create a community'}
+        {existing
+          ? t('communities.editTitle', { name: existing.name })
+          : t('communities.createTitle')}
       </h1>
       <Card className="p-4 sm:p-6">
         <form onSubmit={onSubmit} className="space-y-5" noValidate>
           <Field
-            label="Name"
+            label={t('communities.name')}
             error={errors.name?.message}
             hint={
               existing
-                ? 'Community names cannot be changed.'
-                : `g/${name || 'name'} · 3-21 letters, numbers or _`
+                ? t('communities.nameLocked')
+                : t('communities.nameHint', { name: name || t('communities.namePlaceholder') })
             }
           >
             {(props) => (
@@ -94,18 +102,18 @@ function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
               />
             )}
           </Field>
-          <Field label="Description" error={errors.description?.message}>
+          <Field label={t('communities.description')} error={errors.description?.message}>
             {(props) => (
               <Textarea
                 rows={4}
-                placeholder="What is this community about?"
+                placeholder={t('communities.descriptionPlaceholder')}
                 {...props}
                 {...register('description')}
               />
             )}
           </Field>
           <SingleImagePicker
-            label="Icon"
+            label={t('communities.icon')}
             shape="circle"
             file={icon}
             currentUrl={removeIcon ? null : (existing?.iconUrl ?? null)}
@@ -113,9 +121,9 @@ function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
             onRemove={() => setRemoveIcon(true)}
           />
           <div className="space-y-1.5">
-            <span className="block text-sm font-medium">Banner</span>
+            <span className="block text-sm font-medium">{t('communities.banner')}</span>
             <SingleImagePicker
-              label="Banner"
+              label={t('communities.banner')}
               shape="banner"
               file={banner}
               currentUrl={removeBanner ? null : (existing?.bannerUrl ?? null)}
@@ -125,10 +133,10 @@ function SubgedditForm({ existing }: { existing?: SubgedditDto }) {
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => void navigate(-1)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" loading={pending}>
-              {existing ? 'Save changes' : 'Create community'}
+              {existing ? t('communities.saveChanges') : t('common.createCommunity')}
             </Button>
           </div>
         </form>

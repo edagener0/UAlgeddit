@@ -1,6 +1,7 @@
 import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { SubgedditIcon } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { buttonClasses } from '@/components/ui/button-classes';
@@ -8,11 +9,11 @@ import { Card } from '@/components/ui/card';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/feedback';
 import { Input } from '@/components/ui/field';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
-import { pluralize } from '@/lib/utils';
 import { useCurrentUser } from '../auth/hooks';
 import { useSubgeddits } from './hooks';
 
 export function SubgedditsPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const q = useDebouncedValue(search.trim());
@@ -23,12 +24,12 @@ export function SubgedditsPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Communities</h1>
-          <p className="text-sm text-fg-muted">Find a place for every topic.</p>
+          <h1 className="text-2xl font-bold">{t('communities.title')}</h1>
+          <p className="text-sm text-fg-muted">{t('communities.subtitle')}</p>
         </div>
         <Link to={user ? '/g/new' : '/login'} className={buttonClasses('primary', 'md')}>
           <Plus className="size-4" aria-hidden />
-          Create community
+          {t('common.createCommunity')}
         </Link>
       </div>
 
@@ -39,8 +40,8 @@ export function SubgedditsPage() {
         />
         <Input
           type="search"
-          aria-label="Search communities"
-          placeholder="Search communities"
+          aria-label={t('communities.search')}
+          placeholder={t('communities.search')}
           className="pl-10"
           value={search}
           onChange={(event) => {
@@ -60,8 +61,8 @@ export function SubgedditsPage() {
         <ErrorState error={list.error} onRetry={() => void list.refetch()} />
       ) : list.data.items.length === 0 ? (
         <EmptyState
-          title="No communities found"
-          description={q ? 'Try another search.' : 'Create the first one!'}
+          title={t('communities.empty')}
+          description={q ? t('communities.emptySearch') : t('communities.emptyFirst')}
         />
       ) : (
         <>
@@ -88,7 +89,7 @@ export function SubgedditsPage() {
                       <div>
                         <h2 className="font-bold">g/{subgeddit.name}</h2>
                         <p className="text-xs text-fg-muted">
-                          {pluralize(subgeddit.postCount, 'post')}
+                          {t('common.posts', { count: subgeddit.postCount })}
                         </p>
                       </div>
                       {subgeddit.description && (
@@ -103,17 +104,20 @@ export function SubgedditsPage() {
             ))}
           </ul>
           {list.data.totalPages > 1 && (
-            <nav aria-label="Pagination" className="flex items-center justify-center gap-3">
+            <nav
+              aria-label={t('common.pagination')}
+              className="flex items-center justify-center gap-3"
+            >
               <Button
                 variant="outline"
                 size="sm"
                 disabled={page <= 1}
                 onClick={() => setPage(page - 1)}
               >
-                Previous
+                {t('common.previous')}
               </Button>
               <span className="text-sm text-fg-muted">
-                Page {list.data.page} of {list.data.totalPages}
+                {t('common.pageOf', { page: list.data.page, total: list.data.totalPages })}
               </span>
               <Button
                 variant="outline"
@@ -121,7 +125,7 @@ export function SubgedditsPage() {
                 disabled={page >= list.data.totalPages}
                 onClick={() => setPage(page + 1)}
               >
-                Next
+                {t('common.next')}
               </Button>
             </nav>
           )}

@@ -1,4 +1,5 @@
 import type { ApiErrorBody } from '@ualgeddit/shared';
+import { translateMessage } from '@/i18n';
 
 export const API_BASE = '/api';
 
@@ -71,9 +72,11 @@ export const api = {
 
 /** Human readable message for any error thrown by a query or mutation. */
 export function errorMessage(error: unknown): string {
-  if (error instanceof ApiError) return error.details[0]?.message ?? error.message;
-  if (error instanceof Error) return error.message;
-  return 'Something went wrong';
+  if (error instanceof ApiError) {
+    return translateMessage(error.details[0]?.message ?? error.message);
+  }
+  if (error instanceof Error) return translateMessage(error.message);
+  return translateMessage('Something went wrong');
 }
 
 /** Builds multipart form data, skipping undefined values and appending File arrays. */

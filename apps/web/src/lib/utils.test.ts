@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cn, formatCount, formatRelativeTime, pluralize } from './utils';
+import { cn, formatCount, formatRelativeTime } from './utils';
 
 describe('cn', () => {
   it('merges conditional classes and resolves Tailwind conflicts', () => {
@@ -12,7 +12,7 @@ describe('formatRelativeTime', () => {
   const now = new Date('2026-06-15T12:00:00Z');
 
   it.each([
-    ['2026-06-15T11:59:50Z', 'just now'],
+    ['2026-06-15T11:59:50Z', 'now'],
     ['2026-06-15T11:55:00Z', '5 min. ago'],
     ['2026-06-15T09:00:00Z', '3 hr. ago'],
     ['2026-06-14T12:00:00Z', 'yesterday'],
@@ -31,13 +31,5 @@ describe('formatCount', () => {
     [2_000_000, '2M'],
   ])('%d -> %s', (value, expected) => {
     expect(formatCount(value)).toBe(expected);
-  });
-});
-
-describe('pluralize', () => {
-  it('uses the singular for one item', () => {
-    expect(pluralize(1, 'post')).toBe('1 post');
-    expect(pluralize(3, 'post')).toBe('3 posts');
-    expect(pluralize(2, 'reply', 'replies')).toBe('2 replies');
   });
 });

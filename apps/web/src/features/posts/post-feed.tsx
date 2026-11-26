@@ -1,18 +1,13 @@
 import type { PostSort } from '@ualgeddit/shared';
 import { Clock, Flame, Trophy } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/feedback';
 import { Segmented } from '@/components/ui/segmented';
 import type { PostFilters } from './api';
-import { PostCard } from './post-card';
 import { usePostFeed } from './hooks';
-
-const SORTS = [
-  { value: 'hot', label: 'Hot', icon: <Flame className="size-4" aria-hidden /> },
-  { value: 'new', label: 'New', icon: <Clock className="size-4" aria-hidden /> },
-  { value: 'top', label: 'Top', icon: <Trophy className="size-4" aria-hidden /> },
-] satisfies { value: PostSort; label: string; icon: React.ReactNode }[];
+import { PostCard } from './post-card';
 
 export function SortBar({
   sort,
@@ -21,7 +16,15 @@ export function SortBar({
   sort: PostSort;
   onChange: (sort: PostSort) => void;
 }) {
-  return <Segmented label="Sort posts" options={SORTS} value={sort} onChange={onChange} />;
+  const { t } = useTranslation();
+  const options: { value: PostSort; label: string; icon: React.ReactNode }[] = [
+    { value: 'hot', label: t('feed.hot'), icon: <Flame className="size-4" aria-hidden /> },
+    { value: 'new', label: t('feed.new'), icon: <Clock className="size-4" aria-hidden /> },
+    { value: 'top', label: t('feed.top'), icon: <Trophy className="size-4" aria-hidden /> },
+  ];
+  return (
+    <Segmented label={t('feed.sortLabel')} options={options} value={sort} onChange={onChange} />
+  );
 }
 
 export function PostSkeleton() {
@@ -40,15 +43,18 @@ interface PostFeedProps {
   hideSubgeddit?: boolean;
   emptyTitle?: string;
   emptyDescription?: string;
+  emptyAction?: React.ReactNode;
 }
 
 /** Infinite list of posts; loads the next page when the sentinel scrolls into view. */
 export function PostFeed({
   filters,
   hideSubgeddit,
-  emptyTitle = 'No posts yet',
+  emptyTitle,
   emptyDescription,
+  emptyAction,
 }: PostFeedProps) {
+  const { t } = useTranslation();
   const feed = usePostFeed(filters);
   const sentinel = useRef<HTMLDivElement>(null);
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = feed;
@@ -77,7 +83,15 @@ export function PostFeed({
   if (feed.isError) return <ErrorState error={feed.error} onRetry={() => void feed.refetch()} />;
 
   const posts = feed.data.pages.flatMap((page) => page.items);
-  if (posts.length === 0) return <EmptyState title={emptyTitle} description={emptyDescription} />;
+  if (posts.length === 0) {
+    return (
+      <EmptyState
+        title={emptyTitle ?? t('feed.empty')}
+        description={emptyDescription}
+        action={emptyAction}
+      />
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -92,7 +106,7 @@ export function PostFeed({
             loading={isFetchingNextPage}
             onClick={() => void fetchNextPage()}
           >
-            Load more
+            {t('common.loadMore')}
           </Button>
         </div>
       )}

@@ -3,6 +3,7 @@ import { MAX_COMMENT_DEPTH } from '@ualgeddit/shared';
 import { MessageSquare, MinusCircle, PlusCircle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ImageThumbnails } from '@/components/image-gallery';
 import { Avatar } from '@/components/ui/avatar';
@@ -19,6 +20,7 @@ function countReplies(comment: CommentDto): number {
 }
 
 export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth?: number }) {
+  const { t } = useTranslation();
   const { user } = useCurrentUser();
   const requireAuth = useRequireAuth();
   const vote = useVoteComment(comment.postId, comment.id);
@@ -42,7 +44,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
           {!collapsed && comment.replies.length > 0 && (
             <button
               type="button"
-              aria-label="Collapse thread"
+              aria-label={t('comments.collapseThread')}
               onClick={() => setCollapsed(true)}
               className="group mt-1 flex w-4 flex-1 justify-center"
             >
@@ -58,7 +60,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                 {comment.author.username}
               </Link>
             ) : (
-              <span className="font-semibold text-fg-muted">[deleted]</span>
+              <span className="font-semibold text-fg-muted">{t('comments.deleted')}</span>
             )}
             <span className="text-fg-muted" aria-hidden>
               •
@@ -73,7 +75,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                 className="ml-1 inline-flex items-center gap-1 font-semibold text-brand-600"
               >
                 <PlusCircle className="size-3.5" aria-hidden />
-                {countReplies(comment)} more
+                {t('comments.more', { count: countReplies(comment) })}
               </button>
             )}
           </div>
@@ -81,7 +83,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
           {!collapsed && (
             <>
               {comment.deleted ? (
-                <p className="mt-1 text-sm text-fg-muted italic">[deleted]</p>
+                <p className="mt-1 text-sm text-fg-muted italic">{t('comments.deleted')}</p>
               ) : (
                 <>
                   {comment.content && (
@@ -91,7 +93,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                   )}
                   <ImageThumbnails
                     images={comment.images}
-                    alt={`Comment by ${comment.author?.username ?? 'user'}`}
+                    alt={t('comments.by', { name: comment.author?.username ?? '' })}
                   />
                 </>
               )}
@@ -113,7 +115,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                       className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold hover:bg-surface-muted hover:text-fg"
                     >
                       <MessageSquare className="size-3.5" aria-hidden />
-                      Reply
+                      {t('comments.reply')}
                     </button>
                   )}
                   {comment.replies.length > 0 && (
@@ -123,7 +125,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                       className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold hover:bg-surface-muted hover:text-fg"
                     >
                       <MinusCircle className="size-3.5" aria-hidden />
-                      Collapse
+                      {t('comments.collapse')}
                     </button>
                   )}
                   {isAuthor && (
@@ -133,7 +135,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                       className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold hover:bg-red-500/10 hover:text-red-600"
                     >
                       <Trash2 className="size-3.5" aria-hidden />
-                      Delete
+                      {t('common.delete')}
                     </button>
                   )}
                 </div>
@@ -145,7 +147,7 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
                     postId={comment.postId}
                     parentId={comment.id}
                     autoFocus
-                    placeholder={`Reply to ${comment.author?.username ?? 'comment'}...`}
+                    placeholder={t('comments.replyTo', { name: comment.author?.username ?? '' })}
                     onDone={() => setReplying(false)}
                     onCancel={() => setReplying(false)}
                   />
@@ -166,15 +168,15 @@ export function CommentItem({ comment, depth = 0 }: { comment: CommentDto; depth
 
       <ConfirmDialog
         open={confirming}
-        title="Delete comment?"
-        description="Your comment will be removed. Replies will stay visible."
+        title={t('comments.deleteTitle')}
+        description={t('comments.deleteDescription')}
         loading={remove.isPending}
         onClose={() => setConfirming(false)}
         onConfirm={() =>
           remove.mutate(comment.id, {
             onSuccess: () => {
               setConfirming(false);
-              toast.success('Comment deleted');
+              toast.success(t('comments.deletedToast'));
             },
             onError: (error) => toast.error(errorMessage(error)),
           })

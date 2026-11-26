@@ -1,6 +1,7 @@
 import { CalendarDays, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Avatar, SubgedditIcon } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { Card } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { ErrorState, Skeleton } from '@/components/ui/feedback';
 import { ApiError, errorMessage } from '@/lib/api-client';
-import { formatDate, pluralize } from '@/lib/utils';
+import { formatCount, formatDate } from '@/lib/utils';
 import { NotFoundPage } from '@/pages/not-found-page';
 import { useCurrentUser } from '../auth/hooks';
 import { PostFeed, SortBar } from '../posts/post-feed';
@@ -17,6 +18,7 @@ import { useSortParam } from '../posts/use-sort-param';
 import { useDeleteSubgeddit, useSubgeddit } from './hooks';
 
 export function SubgedditPage() {
+  const { t } = useTranslation();
   const name = useParams().name ?? '';
   const subgeddit = useSubgeddit(name);
   const { user } = useCurrentUser();
@@ -49,7 +51,7 @@ export function SubgedditPage() {
           className="h-28 rounded-2xl bg-gradient-to-r from-brand-500 to-orange-300 bg-cover bg-center sm:h-44"
           style={data.bannerUrl ? { backgroundImage: `url("${data.bannerUrl}")` } : undefined}
           role="img"
-          aria-label={`g/${data.name} banner`}
+          aria-label={t('communities.bannerLabel', { name: data.name })}
         />
         <div className="flex flex-col gap-3 px-2 sm:flex-row sm:items-end sm:justify-between sm:px-4">
           <div className="-mt-8 flex items-end gap-3 sm:-mt-10">
@@ -67,13 +69,13 @@ export function SubgedditPage() {
               className={buttonClasses('primary', 'md')}
             >
               <Plus className="size-4" aria-hidden />
-              Create post
+              {t('common.createPost')}
             </Link>
             {isOwner && (
               <>
                 <Link to={`/g/${data.name}/edit`} className={buttonClasses('outline', 'md')}>
                   <Pencil className="size-4" aria-hidden />
-                  Edit
+                  {t('common.edit')}
                 </Link>
                 <Button
                   variant="outline"
@@ -81,7 +83,7 @@ export function SubgedditPage() {
                   onClick={() => setConfirming(true)}
                 >
                   <Trash2 className="size-4" aria-hidden />
-                  <span className="sr-only sm:not-sr-only">Delete</span>
+                  <span className="sr-only sm:not-sr-only">{t('common.delete')}</span>
                 </Button>
               </>
             )}
@@ -100,32 +102,32 @@ export function SubgedditPage() {
           <PostFeed
             filters={{ sort, subgeddit: data.name }}
             hideSubgeddit
-            emptyTitle="This community has no posts yet"
-            emptyDescription="Be the first to post something!"
+            emptyTitle={t('communities.emptyPosts')}
+            emptyDescription={t('communities.emptyPostsHint')}
           />
         </div>
         <aside className="hidden w-80 shrink-0 lg:block">
           <Card className="sticky top-20 space-y-4 p-4">
-            <h2 className="font-bold">About g/{data.name}</h2>
+            <h2 className="font-bold">{t('communities.about', { name: data.name })}</h2>
             <p className="text-sm whitespace-pre-line text-fg-muted">
-              {data.description || 'No description yet.'}
+              {data.description || t('communities.noDescription')}
             </p>
             <dl className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <dt className="font-bold">{pluralize(data.postCount, 'post').split(' ')[0]}</dt>
-                <dd className="text-fg-muted">Posts</dd>
+                <dt className="font-bold">{formatCount(data.postCount)}</dt>
+                <dd className="text-fg-muted">{t('communities.posts')}</dd>
               </div>
               <div>
                 <dt className="flex items-center gap-1 font-bold">
                   <CalendarDays className="size-4" aria-hidden />
                   {formatDate(data.createdAt)}
                 </dt>
-                <dd className="text-fg-muted">Created</dd>
+                <dd className="text-fg-muted">{t('communities.created')}</dd>
               </div>
             </dl>
             <div className="border-t border-line pt-3">
               <h3 className="mb-2 text-xs font-bold tracking-wider text-fg-muted uppercase">
-                Moderator
+                {t('communities.moderator')}
               </h3>
               <Link
                 to={`/u/${data.owner.username}`}
@@ -141,14 +143,14 @@ export function SubgedditPage() {
 
       <ConfirmDialog
         open={confirming}
-        title={`Delete g/${data.name}?`}
-        description="This permanently deletes the community together with all of its posts and comments."
+        title={t('communities.deleteTitle', { name: data.name })}
+        description={t('communities.deleteDescription')}
         loading={remove.isPending}
         onClose={() => setConfirming(false)}
         onConfirm={() =>
           remove.mutate(data.name, {
             onSuccess: () => {
-              toast.success(`g/${data.name} deleted`);
+              toast.success(t('communities.deletedToast', { name: data.name }));
               void navigate('/g', { replace: true });
             },
             onError: (error) => toast.error(errorMessage(error)),

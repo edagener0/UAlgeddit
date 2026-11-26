@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, ImagePlus, X } from 'lucide-react';
 import { useRef, useState, type DragEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useObjectUrls } from '@/hooks/use-object-urls';
 import { IMAGE_ACCEPT, validateImage } from '@/lib/image-validation';
 import { cn } from '@/lib/utils';
@@ -11,18 +12,21 @@ interface ImagePickerProps {
   compact?: boolean;
 }
 
+const roundControl = 'rounded-full bg-black/70 p-1 text-white hover:bg-black';
+
 /** Drag & drop multi-image picker with previews, reordering and client-side validation. */
 export function ImagePicker({ files, onChange, max, compact = false }: ImagePickerProps) {
+  const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const previews = useObjectUrls(files);
 
   const add = (incoming: File[]) => {
-    const problems = incoming.map(validateImage).filter(Boolean);
+    const problems = incoming.map(validateImage).filter((problem) => problem !== null);
     const valid = incoming.filter((file) => validateImage(file) === null);
     const room = max - files.length;
-    if (valid.length > room) problems.push(`You can attach at most ${max} images`);
+    if (valid.length > room) problems.push(t('picker.tooMany', { max }));
     setError(problems[0] ?? null);
     if (room > 0 && valid.length > 0) onChange([...files, ...valid.slice(0, room)]);
   };
@@ -74,11 +78,9 @@ export function ImagePicker({ files, onChange, max, compact = false }: ImagePick
         >
           <ImagePlus className={compact ? 'size-5' : 'size-7'} aria-hidden />
           <span>
-            <strong className="text-fg">Click to upload</strong> or drag and drop
+            <strong className="text-fg">{t('picker.clickToUpload')}</strong> {t('picker.orDrag')}
           </span>
-          <span className="text-xs">
-            JPEG, PNG, GIF or WebP · up to 5 MB · {files.length}/{max}
-          </span>
+          <span className="text-xs">{t('picker.hint', { count: files.length, max })}</span>
         </button>
       )}
 
@@ -98,9 +100,9 @@ export function ImagePicker({ files, onChange, max, compact = false }: ImagePick
               <img src={previews[index]} alt={file.name} className="size-full object-cover" />
               <button
                 type="button"
-                aria-label={`Remove ${file.name}`}
+                aria-label={t('picker.remove', { name: file.name })}
                 onClick={() => onChange(files.filter((_, i) => i !== index))}
-                className="absolute top-1 right-1 rounded-full bg-black/70 p-1 text-white hover:bg-black"
+                className={`${roundControl} absolute top-1 right-1`}
               >
                 <X className="size-3.5" aria-hidden />
               </button>
@@ -108,19 +110,19 @@ export function ImagePicker({ files, onChange, max, compact = false }: ImagePick
                 <div className="absolute inset-x-1 bottom-1 flex justify-between opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                   <button
                     type="button"
-                    aria-label="Move left"
+                    aria-label={t('picker.moveLeft')}
                     disabled={index === 0}
                     onClick={() => move(index, index - 1)}
-                    className="rounded-full bg-black/70 p-1 text-white disabled:invisible"
+                    className={`${roundControl} disabled:invisible`}
                   >
                     <ChevronLeft className="size-3.5" aria-hidden />
                   </button>
                   <button
                     type="button"
-                    aria-label="Move right"
+                    aria-label={t('picker.moveRight')}
                     disabled={index === files.length - 1}
                     onClick={() => move(index, index + 1)}
-                    className="rounded-full bg-black/70 p-1 text-white disabled:invisible"
+                    className={`${roundControl} disabled:invisible`}
                   >
                     <ChevronRight className="size-3.5" aria-hidden />
                   </button>
@@ -150,6 +152,7 @@ export function SingleImagePicker({
   label: string;
   shape?: 'square' | 'circle' | 'banner';
 }) {
+  const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview] = useObjectUrls(file ? [file] : []);
@@ -161,7 +164,7 @@ export function SingleImagePicker({
         <button
           type="button"
           onClick={() => input.current?.click()}
-          aria-label={`Choose ${label}`}
+          aria-label={t('picker.choose', { label })}
           className={cn(
             'relative flex shrink-0 items-center justify-center overflow-hidden border-2 border-dashed border-line bg-surface-muted text-fg-muted hover:border-brand-500',
             shape === 'circle' && 'size-20 rounded-full',
@@ -178,7 +181,7 @@ export function SingleImagePicker({
         {shape !== 'banner' && (
           <div className="text-xs text-fg-muted">
             <p className="text-sm font-medium text-fg">{label}</p>
-            JPEG, PNG, GIF or WebP, up to 5 MB
+            {t('picker.singleHint')}
           </div>
         )}
       </div>
@@ -188,7 +191,7 @@ export function SingleImagePicker({
           className="font-semibold text-brand-600 hover:underline"
           onClick={() => input.current?.click()}
         >
-          {shown ? 'Change' : 'Upload'} {label.toLowerCase()}
+          {shown ? t('picker.change') : t('picker.upload')}
         </button>
         {shown && (
           <button
@@ -199,7 +202,7 @@ export function SingleImagePicker({
               if (!file) onRemove?.();
             }}
           >
-            Remove
+            {t('picker.remove2')}
           </button>
         )}
       </div>

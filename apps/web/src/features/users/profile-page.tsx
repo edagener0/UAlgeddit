@@ -1,5 +1,6 @@
 import { Cake, Pencil, Sparkles, Users } from 'lucide-react';
 import { Link, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Avatar } from '@/components/ui/avatar';
 import { buttonClasses } from '@/components/ui/button-classes';
 import { Card } from '@/components/ui/card';
@@ -22,6 +23,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const username = useParams().username ?? '';
   const profile = useUserProfile(username);
   const [sort, setSort] = useSortParam();
@@ -51,15 +53,15 @@ export function ProfilePage() {
             </div>
             {user.bio && <p className="text-sm whitespace-pre-line">{user.bio}</p>}
             <dl className="grid grid-cols-2 gap-3">
-              <Stat label="Karma" value={formatCount(user.karma)} />
-              <Stat label="Posts" value={formatCount(user.postCount)} />
-              <Stat label="Friends" value={formatCount(user.friendCount)} />
-              <Stat label="Joined" value={formatDate(user.createdAt)} />
+              <Stat label={t('profile.karma')} value={formatCount(user.karma)} />
+              <Stat label={t('profile.posts')} value={formatCount(user.postCount)} />
+              <Stat label={t('profile.friends')} value={formatCount(user.friendCount)} />
+              <Stat label={t('profile.joined')} value={formatDate(user.createdAt)} />
             </dl>
             {user.birthday && (
               <p className="flex items-center gap-2 text-sm text-fg-muted">
                 <Cake className="size-4" aria-hidden />
-                Birthday: {formatDate(user.birthday)}
+                {t('profile.birthday', { date: formatDate(user.birthday) })}
               </p>
             )}
             <div className="flex flex-wrap gap-2">
@@ -67,11 +69,11 @@ export function ProfilePage() {
                 <>
                   <Link to="/settings/profile" className={buttonClasses('outline', 'md')}>
                     <Pencil className="size-4" aria-hidden />
-                    Edit profile
+                    {t('nav.editProfile')}
                   </Link>
                   <Link to="/friends" className={buttonClasses('secondary', 'md')}>
                     <Users className="size-4" aria-hidden />
-                    Friends
+                    {t('nav.friends')}
                   </Link>
                 </>
               ) : (
@@ -86,13 +88,13 @@ export function ProfilePage() {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-bold">
             <Sparkles className="size-5 text-brand-500" aria-hidden />
-            Posts
+            {t('profile.posts')}
           </h2>
           <SortBar sort={sort} onChange={setSort} />
         </div>
         <PostFeed
           filters={{ sort, author: user.username }}
-          emptyTitle={`u/${user.username} hasn't posted yet`}
+          emptyTitle={t('profile.noPosts', { name: user.username })}
         />
       </div>
     </div>

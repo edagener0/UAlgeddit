@@ -1,14 +1,16 @@
 import { AlertTriangle, Inbox, Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { errorMessage } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
 
-export function Spinner({ className, label = 'Loading' }: { className?: string; label?: string }) {
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  const { t } = useTranslation();
   return (
     <div role="status" className={cn('flex justify-center py-10 text-fg-muted', className)}>
       <Loader2 className="size-6 animate-spin" aria-hidden />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('common.loading')}</span>
     </div>
   );
 }
@@ -39,15 +41,16 @@ export function EmptyState({
 }
 
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
+  const { t } = useTranslation();
   return (
     <EmptyState
       icon={<AlertTriangle className="size-10 text-red-500" aria-hidden />}
-      title="Something went wrong"
+      title={t('common.somethingWrong')}
       description={errorMessage(error)}
       action={
         onRetry && (
           <Button variant="outline" size="sm" onClick={onRetry}>
-            Try again
+            {t('common.tryAgain')}
           </Button>
         )
       }

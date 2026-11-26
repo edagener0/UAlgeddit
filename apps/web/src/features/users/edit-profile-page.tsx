@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { updateProfileSchema } from '@ualgeddit/shared';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { SingleImagePicker } from '@/components/image-picker';
@@ -30,6 +31,7 @@ function EditProfileForm({
   bio: string;
   birthday: string;
 }) {
+  const { t } = useTranslation();
   const update = useUpdateProfile();
   const avatar = useAvatar();
   const { user } = useCurrentUser();
@@ -54,7 +56,7 @@ function EditProfileForm({
     }
     update.mutate(parsed.data, {
       onSuccess: () => {
-        toast.success('Profile updated');
+        toast.success(t('profile.updated'));
         void navigate(`/u/${username}`);
       },
       onError: (error) => applyServerErrors(error, setError, ['bio', 'birthday']),
@@ -63,30 +65,27 @@ function EditProfileForm({
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
-      <h1 className="text-2xl font-bold">Edit profile</h1>
+      <h1 className="text-2xl font-bold">{t('profile.editTitle')}</h1>
       <Card className="space-y-6 p-4 sm:p-6">
         <SingleImagePicker
-          label="Avatar"
+          label={t('profile.avatar')}
           shape="circle"
           file={null}
           currentUrl={user?.avatarUrl ?? null}
           onChange={(file) =>
             avatar.mutate(file, {
-              onSuccess: () => toast.success(file ? 'Avatar updated' : 'Avatar removed'),
+              onSuccess: () =>
+                toast.success(file ? t('profile.avatarUpdated') : t('profile.avatarRemoved')),
               onError: (error) => toast.error(errorMessage(error)),
             })
           }
           onRemove={() => avatar.mutate(null)}
         />
         <form onSubmit={onSubmit} className="space-y-5" noValidate>
-          <Field
-            label="Bio"
-            error={errors.bio?.message}
-            hint="Tell the community a bit about yourself."
-          >
+          <Field label={t('profile.bio')} error={errors.bio?.message} hint={t('profile.bioHint')}>
             {(props) => <Textarea rows={4} maxLength={500} {...props} {...register('bio')} />}
           </Field>
-          <Field label="Birthday" error={errors.birthday?.message}>
+          <Field label={t('profile.birthdayLabel')} error={errors.birthday?.message}>
             {(props) => (
               <Input
                 type="date"
@@ -99,10 +98,10 @@ function EditProfileForm({
           </Field>
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => void navigate(-1)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" loading={update.isPending}>
-              Save
+              {t('common.save')}
             </Button>
           </div>
         </form>

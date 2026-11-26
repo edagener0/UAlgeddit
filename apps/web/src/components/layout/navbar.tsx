@@ -3,24 +3,25 @@ import {
   LogOut,
   Menu,
   MessagesSquare,
-  Moon,
   Plus,
   Search,
   Settings,
-  Sun,
   User,
   Users,
 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { buttonClasses } from '@/components/ui/button-classes';
 import { Dropdown, menuItemClasses } from '@/components/ui/dropdown';
 import { useCurrentUser, useLogout } from '@/features/auth/hooks';
-import { useTheme } from '@/hooks/use-theme';
 
 function SearchBox() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const [value, setValue] = useState(params.get('q') ?? '');
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ function SearchBox() {
       />
       <input
         type="search"
-        aria-label="Search posts"
-        placeholder="Search UAlgeddit"
+        aria-label={t('nav.searchLabel')}
+        placeholder={t('nav.search')}
         value={value}
         onChange={(event) => setValue(event.target.value)}
         className="h-10 w-full rounded-full border border-transparent bg-surface-muted pr-4 pl-10 text-sm focus:border-brand-500 focus:bg-surface focus:outline-none"
@@ -48,9 +49,9 @@ function SearchBox() {
 }
 
 export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
+  const { t } = useTranslation();
   const { user, isLoading } = useCurrentUser();
   const logout = useLogout();
-  const { theme, toggle } = useTheme();
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
@@ -59,12 +60,12 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
           variant="ghost"
           size="icon"
           className="lg:hidden"
-          aria-label="Open menu"
+          aria-label={t('nav.openMenu')}
           onClick={onOpenMenu}
         >
           <Menu className="size-5" aria-hidden />
         </Button>
-        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="UAlgeddit home">
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label={t('nav.homeLabel')}>
           <span className="flex size-9 items-center justify-center rounded-full bg-brand-500 text-xl font-extrabold text-white">
             g
           </span>
@@ -73,45 +74,35 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
           </span>
         </Link>
 
-        <div className="flex flex-1 justify-center">
+        <div className="flex min-w-0 flex-1 justify-center">
           <SearchBox />
         </div>
 
-        <div className="flex shrink-0 items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-            onClick={toggle}
-          >
-            {theme === 'dark' ? (
-              <Sun className="size-5" aria-hidden />
-            ) : (
-              <Moon className="size-5" aria-hidden />
-            )}
-          </Button>
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+          <LanguageSwitcher />
+          <ThemeToggle />
           {isLoading ? null : user ? (
             <>
               <Link
                 to="/chat"
-                aria-label="Global chat"
+                aria-label={t('nav.chat')}
                 className={buttonClasses('ghost', 'icon', 'hidden sm:inline-flex')}
               >
                 <MessagesSquare className="size-5" aria-hidden />
               </Link>
-              <Link to="/submit" className={buttonClasses('ghost', 'md', 'hidden sm:inline-flex')}>
+              <Link to="/submit" className={buttonClasses('ghost', 'md', 'hidden md:inline-flex')}>
                 <Plus className="size-5" aria-hidden />
-                Create
+                {t('nav.create')}
               </Link>
               <Dropdown
-                trigger={({ open, toggle: toggleMenu }) => (
+                trigger={({ open, toggle }) => (
                   <button
                     type="button"
-                    aria-label="Account menu"
+                    aria-label={t('nav.account')}
                     aria-haspopup="menu"
                     aria-expanded={open}
-                    onClick={toggleMenu}
-                    className="rounded-full ring-2 ring-transparent transition hover:ring-line"
+                    onClick={toggle}
+                    className="ml-1 rounded-full ring-2 ring-transparent transition hover:ring-line"
                   >
                     <Avatar src={user.avatarUrl} name={user.username} size="sm" />
                   </button>
@@ -120,7 +111,7 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                 {(close) => (
                   <>
                     <div className="border-b border-line px-4 py-3">
-                      <p className="text-xs text-fg-muted">Signed in as</p>
+                      <p className="text-xs text-fg-muted">{t('nav.signedInAs')}</p>
                       <p className="truncate font-semibold">u/{user.username}</p>
                     </div>
                     <Link
@@ -129,10 +120,10 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                       onClick={close}
                       className={menuItemClasses}
                     >
-                      <User className="size-4" aria-hidden /> Profile
+                      <User className="size-4" aria-hidden /> {t('nav.profile')}
                     </Link>
                     <Link role="menuitem" to="/friends" onClick={close} className={menuItemClasses}>
-                      <Users className="size-4" aria-hidden /> Friends
+                      <Users className="size-4" aria-hidden /> {t('nav.friends')}
                     </Link>
                     <Link
                       role="menuitem"
@@ -140,7 +131,7 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                       onClick={close}
                       className={menuItemClasses}
                     >
-                      <Settings className="size-4" aria-hidden /> Edit profile
+                      <Settings className="size-4" aria-hidden /> {t('nav.editProfile')}
                     </Link>
                     <button
                       role="menuitem"
@@ -151,7 +142,7 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                         logout.mutate();
                       }}
                     >
-                      <LogOut className="size-4" aria-hidden /> Log out
+                      <LogOut className="size-4" aria-hidden /> {t('nav.logOut')}
                     </button>
                   </>
                 )}
@@ -159,13 +150,16 @@ export function Navbar({ onOpenMenu }: { onOpenMenu: () => void }) {
             </>
           ) : (
             <>
-              <Link to="/login" className={buttonClasses('primary', 'md', 'hidden sm:inline-flex')}>
-                Log in
+              <Link
+                to="/login"
+                className={buttonClasses('primary', 'md', 'ml-1 hidden sm:inline-flex')}
+              >
+                {t('common.logIn')}
               </Link>
               <Link
                 to="/login"
-                aria-label="Log in"
-                className={buttonClasses('primary', 'icon', 'sm:hidden')}
+                aria-label={t('common.logIn')}
+                className={buttonClasses('primary', 'icon', 'ml-1 sm:hidden')}
               >
                 <LogIn className="size-4" aria-hidden />
               </Link>
