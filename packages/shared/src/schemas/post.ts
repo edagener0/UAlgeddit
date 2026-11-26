@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { idSchema, paginationQuerySchema, type ImageDto, type UserSummary } from './common.js';
+import { paginationQuerySchema, type ImageDto, type UserSummary } from './common.js';
 
 export const postSortSchema = z.enum(['hot', 'new', 'top']);
 export type PostSort = z.infer<typeof postSortSchema>;
 
 export const createPostSchema = z.object({
-  subgedditId: idSchema,
+  subgedditId: z.coerce.number().int().positive('Choose a community'),
   title: z
     .string()
     .trim()

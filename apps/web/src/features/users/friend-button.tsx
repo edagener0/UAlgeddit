@@ -1,5 +1,6 @@
 import type { UserProfile } from '@ualgeddit/shared';
 import { Check, Clock, UserMinus, UserPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { errorMessage } from '@/lib/api-client';
@@ -8,6 +9,7 @@ import { useFriendAction } from '../friends/hooks';
 
 /** Context-aware friendship action for a profile. */
 export function FriendButton({ profile }: { profile: UserProfile }) {
+  const { t } = useTranslation();
   const requireAuth = useRequireAuth();
   const send = useFriendAction('send');
   const accept = useFriendAction('accept');
@@ -24,11 +26,11 @@ export function FriendButton({ profile }: { profile: UserProfile }) {
           variant="outline"
           loading={unfriend.isPending}
           onClick={() =>
-            unfriend.mutate(profile.id, { onSuccess: () => toast('Removed from friends'), onError })
+            unfriend.mutate(profile.id, { onSuccess: () => toast(t('friends.removed')), onError })
           }
         >
           <UserMinus className="size-4" aria-hidden />
-          Unfriend
+          {t('friends.unfriend')}
         </Button>
       );
     case 'request_sent':
@@ -37,11 +39,11 @@ export function FriendButton({ profile }: { profile: UserProfile }) {
           variant="secondary"
           loading={cancel.isPending}
           onClick={() =>
-            cancel.mutate(profile.id, { onSuccess: () => toast('Request cancelled'), onError })
+            cancel.mutate(profile.id, { onSuccess: () => toast(t('friends.cancelled')), onError })
           }
         >
           <Clock className="size-4" aria-hidden />
-          Requested · Cancel
+          {t('friends.requested')}
         </Button>
       );
     case 'request_received':
@@ -50,13 +52,13 @@ export function FriendButton({ profile }: { profile: UserProfile }) {
           loading={accept.isPending}
           onClick={() =>
             accept.mutate(profile.id, {
-              onSuccess: () => toast.success(`You and ${profile.username} are now friends`),
+              onSuccess: () => toast.success(t('friends.nowFriends', { name: profile.username })),
               onError,
             })
           }
         >
           <Check className="size-4" aria-hidden />
-          Accept request
+          {t('friends.acceptRequest')}
         </Button>
       );
     default:
@@ -66,14 +68,14 @@ export function FriendButton({ profile }: { profile: UserProfile }) {
           onClick={() =>
             requireAuth(() =>
               send.mutate(profile.username, {
-                onSuccess: () => toast.success('Friend request sent'),
+                onSuccess: () => toast.success(t('friends.requestSent')),
                 onError,
               }),
             )
           }
         >
           <UserPlus className="size-4" aria-hidden />
-          Add friend
+          {t('friends.add')}
         </Button>
       );
   }

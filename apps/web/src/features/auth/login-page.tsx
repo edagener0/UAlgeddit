@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@ualgeddit/shared';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { AuthLayout } from './auth-layout';
 import { useCurrentUser, useLogin } from './hooks';
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const { user } = useCurrentUser();
   const login = useLogin();
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ export function LoginPage() {
   const onSubmit = handleSubmit((values) =>
     login.mutate(values, {
       onSuccess: ({ user }) => {
-        toast.success(`Welcome back, ${user.username}!`);
+        toast.success(t('auth.welcomeBack', { name: user.username }));
         void navigate(from, { replace: true });
       },
       onError: (error) => toast.error(errorMessage(error)),
@@ -36,28 +38,28 @@ export function LoginPage() {
 
   return (
     <AuthLayout
-      title="Log in"
-      subtitle="Welcome back to UAlgeddit"
+      title={t('auth.loginTitle')}
+      subtitle={t('auth.loginSubtitle')}
       footer={
         <>
-          New here?{' '}
+          {t('auth.newHere')}{' '}
           <Link
             to="/register"
             state={location.state}
             className="font-semibold text-brand-600 hover:underline"
           >
-            Create an account
+            {t('auth.createAccount')}
           </Link>
         </>
       }
     >
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
-        <Field label="Username" error={errors.username?.message}>
+        <Field label={t('auth.username')} error={errors.username?.message}>
           {(props) => (
             <Input autoComplete="username" autoFocus {...props} {...register('username')} />
           )}
         </Field>
-        <Field label="Password" error={errors.password?.message}>
+        <Field label={t('auth.password')} error={errors.password?.message}>
           {(props) => (
             <Input
               type="password"
@@ -68,7 +70,7 @@ export function LoginPage() {
           )}
         </Field>
         <Button type="submit" size="lg" className="w-full" loading={login.isPending}>
-          Log in
+          {t('common.logIn')}
         </Button>
       </form>
     </AuthLayout>

@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterInput } from '@ualgeddit/shared';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { AuthLayout } from './auth-layout';
 import { useCurrentUser, useRegister } from './hooks';
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const { user } = useCurrentUser();
   const registerUser = useRegister();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ export function RegisterPage() {
   const onSubmit = handleSubmit((values) =>
     registerUser.mutate(values, {
       onSuccess: ({ user }) => {
-        toast.success(`Welcome to UAlgeddit, ${user.username}!`);
+        toast.success(t('auth.welcome', { name: user.username }));
         void navigate(from, { replace: true });
       },
       onError: (error) =>
@@ -38,35 +40,35 @@ export function RegisterPage() {
 
   return (
     <AuthLayout
-      title="Sign up"
-      subtitle="Join the conversation in seconds"
+      title={t('auth.registerTitle')}
+      subtitle={t('auth.registerSubtitle')}
       footer={
         <>
-          Already have an account?{' '}
+          {t('auth.haveAccount')}{' '}
           <Link
             to="/login"
             state={location.state}
             className="font-semibold text-brand-600 hover:underline"
           >
-            Log in
+            {t('common.logIn')}
           </Link>
         </>
       }
     >
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <Field
-          label="Username"
+          label={t('auth.username')}
           error={errors.username?.message}
-          hint="3-20 letters, numbers, _ or -"
+          hint={t('auth.usernameHint')}
         >
           {(props) => (
             <Input autoComplete="username" autoFocus {...props} {...register('username')} />
           )}
         </Field>
         <Field
-          label="Password"
+          label={t('auth.password')}
           error={errors.password?.message}
-          hint="At least 8 characters with a letter and a number"
+          hint={t('auth.passwordHint')}
         >
           {(props) => (
             <Input
@@ -77,7 +79,7 @@ export function RegisterPage() {
             />
           )}
         </Field>
-        <Field label="Confirm password" error={errors.confirmPassword?.message}>
+        <Field label={t('auth.confirmPassword')} error={errors.confirmPassword?.message}>
           {(props) => (
             <Input
               type="password"
@@ -88,7 +90,7 @@ export function RegisterPage() {
           )}
         </Field>
         <Button type="submit" size="lg" className="w-full" loading={registerUser.isPending}>
-          Create account
+          {t('auth.createAccountButton')}
         </Button>
       </form>
     </AuthLayout>

@@ -4,6 +4,7 @@ import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { SubgedditIcon } from '@/components/ui/avatar';
@@ -36,6 +37,7 @@ function EditPostForm({
   initial: EditValues;
   onDone: () => void;
 }) {
+  const { t } = useTranslation();
   const update = useUpdatePost(id);
   const {
     register,
@@ -52,25 +54,25 @@ function EditPostForm({
         onSubmit={handleSubmit((values) =>
           update.mutate(updatePostSchema.parse(values), {
             onSuccess: () => {
-              toast.success('Post updated');
+              toast.success(t('post.updated'));
               onDone();
             },
             onError: (error) => toast.error(errorMessage(error)),
           }),
         )}
       >
-        <Field label="Title" error={errors.title?.message}>
+        <Field label={t('post.title')} error={errors.title?.message}>
           {(props) => <Input {...props} {...register('title')} />}
         </Field>
-        <Field label="Body" error={errors.content?.message}>
+        <Field label={t('post.body')} error={errors.content?.message}>
           {(props) => <Textarea rows={8} {...props} {...register('content')} />}
         </Field>
         <div className="flex justify-end gap-2">
           <Button variant="ghost" onClick={onDone}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" loading={update.isPending}>
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </form>
@@ -79,6 +81,7 @@ function EditPostForm({
 }
 
 export function PostPage() {
+  const { t } = useTranslation();
   const id = Number(useParams().id);
   const post = usePost(id);
   const { user } = useCurrentUser();
@@ -98,7 +101,12 @@ export function PostPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" aria-label="Go back" onClick={() => void navigate(-1)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={t('common.goBack')}
+          onClick={() => void navigate(-1)}
+        >
           <ArrowLeft className="size-5" aria-hidden />
         </Button>
         {post.data && (
@@ -118,7 +126,7 @@ export function PostPage() {
           <div className="ml-auto flex gap-1">
             <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
               <Pencil className="size-4" aria-hidden />
-              Edit
+              {t('common.edit')}
             </Button>
             <Button
               variant="ghost"
@@ -127,7 +135,7 @@ export function PostPage() {
               onClick={() => setConfirming(true)}
             >
               <Trash2 className="size-4" aria-hidden />
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         )}
@@ -149,14 +157,14 @@ export function PostPage() {
 
       <ConfirmDialog
         open={confirming}
-        title="Delete post?"
-        description="This permanently deletes the post, its images and all of its comments."
+        title={t('post.deleteTitle')}
+        description={t('post.deleteDescription')}
         loading={remove.isPending}
         onClose={() => setConfirming(false)}
         onConfirm={() =>
           remove.mutate(id, {
             onSuccess: () => {
-              toast.success('Post deleted');
+              toast.success(t('post.deleted'));
               void navigate(post.data ? `/g/${post.data.subgeddit.name}` : '/', { replace: true });
             },
             onError: (error) => toast.error(errorMessage(error)),

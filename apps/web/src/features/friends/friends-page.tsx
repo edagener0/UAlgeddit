@@ -1,6 +1,7 @@
 import { usernameSchema } from '@ualgeddit/shared';
 import { Check, UserPlus, X } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { Avatar } from '@/components/ui/avatar';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState, ErrorState, Spinner } from '@/components/ui/feedback';
 import { Input } from '@/components/ui/field';
+import { translateMessage } from '@/i18n';
 import { errorMessage } from '@/lib/api-client';
 import { formatRelativeTime } from '@/lib/utils';
 import type { UserSummary } from '@ualgeddit/shared';
@@ -37,6 +39,7 @@ function UserRow({
 }
 
 function AddFriendForm() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [error, setError] = useState<string | null>(null);
   const send = useFriendAction('send');
@@ -45,7 +48,7 @@ function AddFriendForm() {
     event.preventDefault();
     const parsed = usernameSchema.safeParse(username);
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? 'Invalid username');
+      setError(translateMessage(parsed.error.issues[0]?.message ?? 'Validation failed'));
       return;
     }
     setError(null);
@@ -53,7 +56,9 @@ function AddFriendForm() {
       onSuccess: (result) => {
         const { status } = result as { status: string };
         toast.success(
-          status === 'friends' ? `You and ${parsed.data} are now friends` : 'Friend request sent',
+          status === 'friends'
+            ? t('friends.nowFriends', { name: parsed.data })
+            : t('friends.requestSent'),
         );
         setUsername('');
       },
@@ -65,15 +70,15 @@ function AddFriendForm() {
     <form onSubmit={submit} className="space-y-2" noValidate>
       <div className="flex gap-2">
         <Input
-          aria-label="Username"
-          placeholder="Add a friend by username"
+          aria-label={t('auth.username')}
+          placeholder={t('friends.addPlaceholder')}
           value={username}
           aria-invalid={error ? true : undefined}
           onChange={(event) => setUsername(event.target.value)}
         />
         <Button type="submit" loading={send.isPending} className="h-11">
           <UserPlus className="size-4" aria-hidden />
-          <span className="sr-only sm:not-sr-only">Send</span>
+          <span className="sr-only sm:not-sr-only">{t('friends.send')}</span>
         </Button>
       </div>
       {error && (
@@ -86,6 +91,7 @@ function AddFriendForm() {
 }
 
 export function FriendsPage() {
+  const { t } = useTranslation();
   const friends = useFriends();
   const requests = useFriendRequests();
   const accept = useFriendAction('accept');
@@ -96,7 +102,7 @@ export function FriendsPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="text-2xl font-bold">Friends</h1>
+      <h1 className="text-2xl font-bold">{t('friends.title')}</h1>
       <Card className="p-4">
         <AddFriendForm />
       </Card>
@@ -110,7 +116,7 @@ export function FriendsPage() {
           {requests.data.received.length > 0 && (
             <section aria-labelledby="received-heading" className="space-y-2">
               <h2 id="received-heading" className="font-bold">
-                Requests{' '}
+                {t('friends.requests')}{' '}
                 <span className="ml-1 rounded-full bg-brand-500 px-2 py-0.5 text-xs text-white">
                   {requests.data.received.length}
                 </span>
@@ -121,16 +127,16 @@ export function FriendsPage() {
                     <UserRow
                       key={from.id}
                       user={from}
-                      meta={`Sent ${formatRelativeTime(createdAt)}`}
+                      meta={t('friends.sentAgo', { time: formatRelativeTime(createdAt) })}
                     >
                       <Button size="sm" onClick={() => accept.mutate(from.id, { onError })}>
                         <Check className="size-4" aria-hidden />
-                        Accept
+                        {t('friends.accept')}
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        aria-label={`Decline ${from.username}`}
+                        aria-label={t('friends.decline', { name: from.username })}
                         onClick={() => decline.mutate(from.id, { onError })}
                       >
                         <X className="size-4" aria-hidden />
@@ -144,7 +150,7 @@ export function FriendsPage() {
           {requests.data.sent.length > 0 && (
             <section aria-labelledby="sent-heading" className="space-y-2">
               <h2 id="sent-heading" className="font-bold">
-                Pending
+                {t('friends.pending')}
               </h2>
               <Card>
                 <ul className="divide-y divide-line">
@@ -152,14 +158,14 @@ export function FriendsPage() {
                     <UserRow
                       key={to.id}
                       user={to}
-                      meta={`Requested ${formatRelativeTime(createdAt)}`}
+                      meta={t('friends.requestedAgo', { time: formatRelativeTime(createdAt) })}
                     >
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => cancel.mutate(to.id, { onError })}
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </Button>
                     </UserRow>
                   ))}
@@ -172,7 +178,7 @@ export function FriendsPage() {
 
       <section aria-labelledby="friends-heading" className="space-y-2">
         <h2 id="friends-heading" className="font-bold">
-          All friends{' '}
+          {t('friends.all')}{' '}
           {friends.data && (
             <span className="font-normal text-fg-muted">({friends.data.length})</span>
           )}
@@ -183,10 +189,7 @@ export function FriendsPage() {
           <ErrorState error={friends.error} />
         ) : friends.data.length === 0 ? (
           <Card>
-            <EmptyState
-              title="No friends yet"
-              description="Send a request to someone from their profile or above."
-            />
+            <EmptyState title={t('friends.none')} description={t('friends.noneHint')} />
           </Card>
         ) : (
           <Card>
@@ -195,14 +198,14 @@ export function FriendsPage() {
                 <UserRow
                   key={friend.id}
                   user={friend}
-                  meta={`Friends since ${formatRelativeTime(friend.since)}`}
+                  meta={t('friends.since', { time: formatRelativeTime(friend.since) })}
                 >
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => unfriend.mutate(friend.id, { onError })}
                   >
-                    Unfriend
+                    {t('friends.unfriend')}
                   </Button>
                 </UserRow>
               ))}

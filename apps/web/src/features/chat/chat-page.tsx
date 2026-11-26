@@ -1,25 +1,28 @@
 import { chatMessageContentSchema } from '@ualgeddit/shared';
 import { SendHorizontal } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState, Spinner } from '@/components/ui/feedback';
+import { currentLocale, translateMessage } from '@/i18n';
 import { cn } from '@/lib/utils';
 import { useCurrentUser } from '../auth/hooks';
 import { useChat, type ChatStatus } from './use-chat';
 
-const STATUS: Record<ChatStatus, { label: string; dot: string }> = {
-  open: { label: 'Connected', dot: 'bg-emerald-500' },
-  connecting: { label: 'Connecting…', dot: 'bg-amber-500 animate-pulse' },
-  closed: { label: 'Disconnected', dot: 'bg-red-500' },
-};
+const STATUS = {
+  open: { label: 'chat.connected', dot: 'bg-emerald-500' },
+  connecting: { label: 'chat.connecting', dot: 'bg-amber-500 animate-pulse' },
+  closed: { label: 'chat.disconnected', dot: 'bg-red-500' },
+} as const satisfies Record<ChatStatus, { label: string; dot: string }>;
 
 const time = (iso: string) =>
-  new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  new Date(iso).toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' });
 
 export function ChatPage() {
+  const { t } = useTranslation();
   const { user } = useCurrentUser();
   const { messages, status, online, send, lastError, isLoading } = useChat();
   const [draft, setDraft] = useState('');
@@ -38,12 +41,12 @@ export function ChatPage() {
   return (
     <div className="mx-auto flex h-[calc(100dvh-6rem)] max-w-3xl flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Global chat</h1>
+        <h1 className="text-2xl font-bold">{t('chat.title')}</h1>
         <div className="flex items-center gap-3 text-sm text-fg-muted">
-          <span>{online} online</span>
+          <span>{t('chat.online', { count: online })}</span>
           <span className="flex items-center gap-1.5">
             <span className={cn('size-2 rounded-full', STATUS[status].dot)} aria-hidden />
-            {STATUS[status].label}
+            {t(STATUS[status].label)}
           </span>
         </div>
       </div>
@@ -52,7 +55,7 @@ export function ChatPage() {
         {isLoading ? (
           <Spinner />
         ) : messages.length === 0 ? (
-          <EmptyState title="No messages yet" description="Say hi to everyone online!" />
+          <EmptyState title={t('chat.empty')} description={t('chat.emptyHint')} />
         ) : (
           <ol className="space-y-3">
             {messages.map((message, index) => {
@@ -105,16 +108,16 @@ export function ChatPage() {
 
       {lastError && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {lastError}
+          {translateMessage(lastError)}
         </p>
       )}
       <form onSubmit={submit} className="flex gap-2">
         <textarea
-          aria-label="Message"
+          aria-label={t('chat.message')}
           rows={1}
           value={draft}
           maxLength={1000}
-          placeholder={status === 'open' ? 'Message everyone…' : 'Waiting for connection…'}
+          placeholder={status === 'open' ? t('chat.placeholder') : t('chat.waiting')}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) submit(event);
@@ -125,7 +128,7 @@ export function ChatPage() {
           type="submit"
           size="icon"
           className="size-11"
-          aria-label="Send"
+          aria-label={t('chat.send')}
           disabled={status !== 'open' || !draft.trim()}
         >
           <SendHorizontal className="size-5" aria-hidden />

@@ -1,6 +1,7 @@
 import type { PostDto } from '@ualgeddit/shared';
 import { MessageSquare, Share2 } from 'lucide-react';
 import type { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { ImageGallery } from '@/components/image-gallery';
@@ -19,6 +20,7 @@ interface PostCardProps {
 }
 
 export function PostMeta({ post, hideSubgeddit }: { post: PostDto; hideSubgeddit?: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-fg-muted">
       {!hideSubgeddit && (
@@ -44,8 +46,11 @@ export function PostMeta({ post, hideSubgeddit }: { post: PostDto; hideSubgeddit
         {formatRelativeTime(post.createdAt)}
       </time>
       {post.editedAt && (
-        <span className="italic" title={`Edited ${new Date(post.editedAt).toLocaleString()}`}>
-          (edited)
+        <span
+          className="italic"
+          title={t('post.editedAt', { date: new Date(post.editedAt).toLocaleString() })}
+        >
+          {t('post.edited')}
         </span>
       )}
     </div>
@@ -53,6 +58,7 @@ export function PostMeta({ post, hideSubgeddit }: { post: PostDto; hideSubgeddit
 }
 
 export function PostCard({ post, detailed = false, hideSubgeddit = false }: PostCardProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const vote = useVotePost(post.id);
   const requireAuth = useRequireAuth();
@@ -63,9 +69,9 @@ export function PostCard({ post, detailed = false, hideSubgeddit = false }: Post
     const url = `${window.location.origin}${href}`;
     try {
       await navigator.clipboard.writeText(url);
-      toast.success('Link copied to clipboard');
+      toast.success(t('common.linkCopied'));
     } catch {
-      toast.error('Could not copy the link');
+      toast.error(t('common.linkCopyFailed'));
     }
   };
 
@@ -126,7 +132,7 @@ export function PostCard({ post, detailed = false, hideSubgeddit = false }: Post
         >
           <MessageSquare className="size-4" aria-hidden />
           {formatCount(post.commentCount)}
-          <span className="sr-only">comments</span>
+          <span className="sr-only">{t('post.comments')}</span>
         </Link>
         <button
           type="button"
@@ -134,7 +140,7 @@ export function PostCard({ post, detailed = false, hideSubgeddit = false }: Post
           className="inline-flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5 text-sm font-semibold hover:bg-line"
         >
           <Share2 className="size-4" aria-hidden />
-          Share
+          {t('common.share')}
         </button>
       </div>
     </article>

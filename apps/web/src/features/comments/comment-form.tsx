@@ -1,6 +1,7 @@
 import { MAX_COMMENT_IMAGES } from '@ualgeddit/shared';
 import { ImagePlus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ImagePicker } from '@/components/image-picker';
 import { Button } from '@/components/ui/button';
@@ -21,10 +22,11 @@ export function CommentForm({
   postId,
   parentId,
   autoFocus,
-  placeholder = 'What are your thoughts?',
+  placeholder,
   onDone,
   onCancel,
 }: CommentFormProps) {
+  const { t } = useTranslation();
   const [content, setContent] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [showImages, setShowImages] = useState(false);
@@ -55,10 +57,10 @@ export function CommentForm({
       className="space-y-2 rounded-2xl border border-line bg-surface p-2 focus-within:border-brand-500"
     >
       <Textarea
-        aria-label={parentId ? 'Reply' : 'Comment'}
+        aria-label={parentId ? t('comments.reply') : t('comments.comment')}
         value={content}
         autoFocus={autoFocus}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t('comments.placeholder')}
         maxLength={10_000}
         onChange={(event) => setContent(event.target.value)}
         onKeyDown={(event) => {
@@ -73,7 +75,7 @@ export function CommentForm({
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Attach images"
+          aria-label={t('comments.attach')}
           aria-pressed={showImages}
           onClick={() => setShowImages((value) => !value)}
         >
@@ -82,11 +84,11 @@ export function CommentForm({
         <div className="flex gap-2">
           {onCancel && (
             <Button variant="ghost" size="sm" onClick={onCancel}>
-              Cancel
+              {t('common.cancel')}
             </Button>
           )}
           <Button type="submit" size="sm" disabled={!canSubmit} loading={create.isPending}>
-            {parentId ? 'Reply' : 'Comment'}
+            {parentId ? t('comments.reply') : t('comments.comment')}
           </Button>
         </div>
       </div>
