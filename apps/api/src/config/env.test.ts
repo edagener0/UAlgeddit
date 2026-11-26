@@ -9,7 +9,7 @@ const base = {
 describe('loadEnv', () => {
   it('applies defaults', () => {
     const env = loadEnv(base);
-    expect(env.PORT).toBe(3000);
+    expect(env.API_PORT).toBe(3000);
     expect(env.COOKIE_SECURE).toBe(false);
     expect(env.CORS_ORIGINS).toEqual(['http://localhost:5173']);
   });
