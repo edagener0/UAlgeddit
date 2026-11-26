@@ -45,7 +45,11 @@ export default tseslint.config(
   },
   {
     files: ['**/*.test.{ts,tsx}', '**/test/**'],
-    rules: { '@typescript-eslint/no-explicit-any': 'off', 'no-console': 'off' },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': 'off',
+      'react-refresh/only-export-components': 'off',
+    },
   },
   {
     files: ['apps/api/prisma/seed.ts'],
