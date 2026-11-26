@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import type { PostSort, VoteValue } from '@ualgeddit/shared';
 import { NotFoundError } from '../../common/errors/app-error.js';
+import { escapeLike } from '../../common/utils/like.js';
 import { hotRank, voteDelta } from '../../common/utils/votes.js';
 import type { Database } from '../../lib/prisma.js';
 import { userSummarySelect } from '../users/users.mapper.js';
@@ -44,8 +45,8 @@ export class PostsRepository {
       }),
       ...(params.q && {
         OR: [
-          { title: { contains: params.q, mode: 'insensitive' } },
-          { content: { contains: params.q, mode: 'insensitive' } },
+          { title: { contains: escapeLike(params.q), mode: 'insensitive' } },
+          { content: { contains: escapeLike(params.q), mode: 'insensitive' } },
         ],
       }),
     };

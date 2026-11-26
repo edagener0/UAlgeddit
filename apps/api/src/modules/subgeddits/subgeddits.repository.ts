@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client';
+import { escapeLike } from '../../common/utils/like.js';
 import type { Database } from '../../lib/prisma.js';
 import { userSummarySelect } from '../users/users.mapper.js';
 
@@ -16,8 +17,8 @@ export class SubgedditsRepository {
     const where: Prisma.SubgedditWhereInput = params.q
       ? {
           OR: [
-            { nameLower: { contains: params.q.toLowerCase() } },
-            { description: { contains: params.q, mode: 'insensitive' } },
+            { nameLower: { contains: escapeLike(params.q.toLowerCase()) } },
+            { description: { contains: escapeLike(params.q), mode: 'insensitive' } },
           ],
         }
       : {};

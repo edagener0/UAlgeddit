@@ -33,6 +33,12 @@ describe('registerSchema', () => {
     );
   });
 
+  it('rejects passwords longer than 72 UTF-8 bytes (bcrypt would truncate them)', () => {
+    const pw = 'aé1'.repeat(24); // 72 characters, 96 bytes
+    const result = registerSchema.safeParse({ ...valid, password: pw, confirmPassword: pw });
+    expect(result.success).toBe(false);
+  });
+
   it('trims the username', () => {
     expect(registerSchema.parse({ ...valid, username: '  bob  ' }).username).toBe('bob');
   });
@@ -91,6 +97,10 @@ describe('createCommentSchema', () => {
 describe('listPostsQuerySchema', () => {
   it('applies defaults', () => {
     expect(listPostsQuerySchema.parse({})).toEqual({ page: 1, pageSize: 20, sort: 'hot' });
+  });
+
+  it('caps the page number', () => {
+    expect(listPostsQuerySchema.safeParse({ page: '501' }).success).toBe(false);
   });
 
   it('caps the page size', () => {

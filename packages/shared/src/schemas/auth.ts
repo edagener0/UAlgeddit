@@ -7,11 +7,15 @@ export const usernameSchema = z
   .max(20, 'Username must be at most 20 characters')
   .regex(/^[a-zA-Z0-9_-]+$/, 'Only letters, numbers, "_" and "-" are allowed');
 
-/** bcrypt silently truncates input longer than 72 bytes, so we cap the length. */
+/** bcrypt silently ignores everything after 72 *bytes*, so the limit is checked in UTF-8 bytes. */
 export const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters')
   .max(72, 'Password must be at most 72 characters')
+  .refine(
+    (value) => new TextEncoder().encode(value).length <= 72,
+    'Password is too long (accented characters count double)',
+  )
   .regex(/[a-zA-Z]/, 'Password must contain at least one letter')
   .regex(/[0-9]/, 'Password must contain at least one number');
 

@@ -52,7 +52,8 @@ export function createApp(env: Env, container: Container, logger: Logger): Expre
     }),
   );
   app.use(cors({ origin: env.CORS_ORIGINS, credentials: true }));
-  app.use(express.json({ limit: '100kb' }));
+  // Fits the longest allowed post body (40,000 characters of up to 4 UTF-8 bytes).
+  app.use(express.json({ limit: '256kb' }));
   app.use(cookieParser());
 
   // Uploaded images: long-lived cache, no sniffing, and sandboxed if opened directly.

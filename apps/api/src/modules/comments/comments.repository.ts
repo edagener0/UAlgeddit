@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import type { VoteValue } from '@ualgeddit/shared';
+import { MAX_COMMENTS_PER_POST, type VoteValue } from '@ualgeddit/shared';
 import { NotFoundError } from '../../common/errors/app-error.js';
 import { voteDelta } from '../../common/utils/votes.js';
 import type { Database } from '../../lib/prisma.js';
@@ -25,6 +25,7 @@ export class CommentsRepository {
       where: { postId },
       include: commentInclude(viewerId),
       orderBy: { createdAt: 'asc' },
+      take: MAX_COMMENTS_PER_POST,
     });
   }
 

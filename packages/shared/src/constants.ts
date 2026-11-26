@@ -19,5 +19,11 @@ export type AllowedImageMimeType = (typeof ALLOWED_IMAGE_MIME_TYPES)[number];
 export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 100;
 
+/** Deep offset pagination is expensive; nobody scrolls past this page. */
+export const MAX_PAGE = 500;
+
+/** Upper bound of comments loaded for a single post. */
+export const MAX_COMMENTS_PER_POST = 2000;
+
 /** Maximum depth of nested comment replies. */
 export const MAX_COMMENT_DEPTH = 8;

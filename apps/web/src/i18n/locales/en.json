@@ -309,6 +309,7 @@
     "Image is too large": "Image is too large",
     "Validation failed": "Validation failed",
     "Something went wrong": "Something went wrong",
-    "Cross-origin request blocked": "Cross-origin request blocked"
+    "Cross-origin request blocked": "Cross-origin request blocked",
+    "Password is too long (accented characters count double)": "Password is too long (accented characters count double)"
   }
 }

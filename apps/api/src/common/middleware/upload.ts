@@ -16,7 +16,8 @@ const allowed = new Set<string>(ALLOWED_IMAGE_MIME_TYPES);
 function imageUpload(maxFiles: number) {
   return multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: MAX_IMAGE_SIZE_BYTES, files: maxFiles, fields: 20, fieldSize: 64 * 1024 },
+    // fieldSize fits the longest allowed post body (40,000 characters of up to 4 UTF-8 bytes).
+    limits: { fileSize: MAX_IMAGE_SIZE_BYTES, files: maxFiles, fields: 20, fieldSize: 256 * 1024 },
     fileFilter: (_req, file, callback) => {
       if (allowed.has(file.mimetype)) {
         callback(null, true);

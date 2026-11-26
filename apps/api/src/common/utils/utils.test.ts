@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { durationToMs } from '../http/duration.js';
 import { extractToken, parseCookieHeader, AUTH_COOKIE_NAME } from '../http/auth-cookie.js';
 import { detectImageKind } from './image-signature.js';
+import { escapeLike } from './like.js';
 import { paginate, toSkipTake } from './pagination.js';
 import { hotRank, voteDelta } from './votes.js';
 
@@ -95,5 +96,12 @@ describe('auth cookie helpers', () => {
       a: '1',
       b: 'hello world',
     });
+  });
+});
+
+describe('escapeLike', () => {
+  it('escapes LIKE wildcards and backslashes so search is literal', () => {
+    expect(escapeLike('50%_off\\')).toBe('50\\%\\_off\\\\');
+    expect(escapeLike('plain text')).toBe('plain text');
   });
 });
