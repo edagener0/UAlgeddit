@@ -40,7 +40,7 @@ export class PostsRepository {
     const where: Prisma.PostWhereInput = {
       ...(params.subgeddit && { subgeddit: { nameLower: params.subgeddit.toLowerCase() } }),
       ...(params.author && {
-        author: { username: { equals: params.author, mode: 'insensitive' } },
+        author: { usernameLower: params.author.toLowerCase() },
       }),
       ...(params.q && {
         OR: [
@@ -121,6 +121,9 @@ export class PostsRepository {
    */
   vote(postId: number, userId: number, value: VoteValue) {
     return this.db.$transaction(async (tx) => {
+      // Row lock: concurrent votes on the same post run one after the other, so the
+      // "previous vote" read below can never be stale (no double counting).
+      await tx.$queryRaw`SELECT id FROM posts WHERE id = ${postId} FOR UPDATE`;
       const post = await tx.post.findUnique({
         where: { id: postId },
         select: { id: true, score: true, createdAt: true, authorId: true },

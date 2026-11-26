@@ -73,9 +73,14 @@ export class CommentsRepository {
    */
   softDelete(id: number, postId: number) {
     return this.db.$transaction(async (tx) => {
+      // Only the first of two concurrent deletes wins, so the counter is decremented once.
+      const { count } = await tx.comment.updateMany({
+        where: { id, deletedAt: null },
+        data: { content: '', deletedAt: new Date() },
+      });
+      if (count === 0) throw new NotFoundError('Comment');
       const images = await tx.commentImage.findMany({ where: { commentId: id } });
       await tx.commentImage.deleteMany({ where: { commentId: id } });
-      await tx.comment.update({ where: { id }, data: { content: '', deletedAt: new Date() } });
       await tx.post.update({ where: { id: postId }, data: { commentCount: { decrement: 1 } } });
       return images.map((image) => image.url);
     });
@@ -83,6 +88,8 @@ export class CommentsRepository {
 
   vote(commentId: number, userId: number, value: VoteValue) {
     return this.db.$transaction(async (tx) => {
+      // Serialise concurrent votes on the same comment (see PostsRepository.vote).
+      await tx.$queryRaw`SELECT id FROM comments WHERE id = ${commentId} FOR UPDATE`;
       const comment = await tx.comment.findUnique({
         where: { id: commentId },
         select: { score: true, authorId: true, deletedAt: true },
