@@ -32,7 +32,7 @@ install: env ## Install dependencies and generate the Prisma client
 	$(API) db:generate
 
 .PHONY: setup
-setup: install db-up migrate seed ## One-shot local setup: install, start Postgres, migrate and seed
+setup: install db-up migrate ## One-shot local setup: install, start Postgres and migrate (clean database)
 
 ##@ Development
 
@@ -67,12 +67,12 @@ migrate-deploy: ## Apply pending migrations (prisma migrate deploy)
 	$(API) db:deploy
 
 .PHONY: seed
-seed: ## Reset the data and populate the database with mock data
+seed: ## (Optional, dev only) WIPE the database and load demo data
 	$(API) db:seed
 
 .PHONY: db-reset
-db-reset: ## Drop the database, re-apply every migration and seed
-	$(API) db:reset
+db-reset: ## Drop the database and re-apply every migration (no data)
+	$(API) db:reset -- --skip-seed
 
 .PHONY: studio
 studio: ## Open Prisma Studio
@@ -118,10 +118,6 @@ up: env ## Build and start the full stack on http://localhost:8080
 	$(COMPOSE) up -d --build --wait
 	@echo "UAlgeddit is running on http://localhost:$${WEB_PORT:-8080} (API docs: /api/docs)"
 
-.PHONY: up-seed
-up-seed: up ## Start the full stack and load the mock data
-	$(COMPOSE) exec -e SEED_FORCE=true api node dist/seed.js
-
 .PHONY: down
 down: ## Stop the stack (keeps data)
 	$(COMPOSE) down
@@ -135,7 +131,7 @@ ps: ## Show the status of the containers
 	$(COMPOSE) ps
 
 .PHONY: docker-seed
-docker-seed: ## Load mock data into the running Docker stack
+docker-seed: ## (Optional) WIPE the Docker database and load demo data
 	$(COMPOSE) exec -e SEED_FORCE=true api node dist/seed.js
 
 ##@ Documentation
