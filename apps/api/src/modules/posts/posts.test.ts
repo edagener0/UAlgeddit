@@ -18,6 +18,7 @@ const postRecord = (overrides: Partial<PostRecord> = {}): PostRecord =>
     score: 4,
     hotRank: 0,
     commentCount: 2,
+    editedAt: null,
     createdAt: new Date('2026-01-01T00:00:00Z'),
     updatedAt: new Date('2026-01-01T00:00:00Z'),
     author: { id: 10, username: 'alice', avatarUrl: null },
