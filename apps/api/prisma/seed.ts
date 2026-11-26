@@ -210,28 +210,57 @@ const USERNAMES = [
 const pick = <T>(items: readonly T[]) => faker.helpers.arrayElement(items);
 const chance = (probability: number) => faker.number.float({ min: 0, max: 1 }) < probability;
 
+const SENTENCES = [
+  'I have been thinking about this for a while and wanted to hear what you all think.',
+  'Honestly, this turned out much better than I expected.',
+  'Any tips or recommendations are more than welcome.',
+  'Took me a few tries, but I am pretty happy with the result.',
+  'Curious whether anyone else has had the same experience.',
+  'Here is a quick summary of what I learned along the way.',
+  'It is one of those things that seems simple until you actually try it.',
+  'I found a couple of great resources that helped a lot.',
+  'Let me know if you want more details and I will update the post.',
+  'This community has been super helpful, so I wanted to give something back.',
+  'The first attempt was a disaster, the second one was fine, the third one was great.',
+  'Would love some honest feedback before I take this further.',
+  'Weekend project, nothing fancy, but it made my day.',
+  'Saving this here so I can find it again next semester.',
+];
+
+const COMMENTS = [
+  'This!',
+  'Great post, thanks for sharing.',
+  'Underrated comment.',
+  'Source?',
+  'Saving this for later.',
+  'Came here to say this.',
+  'I had the exact same problem last week.',
+  'Wow, that looks amazing.',
+  'Can confirm, works perfectly.',
+  'Not sure I agree, but interesting point.',
+  'How long did this take you?',
+  'Thanks, this helped me a lot!',
+  'This deserves more upvotes.',
+  'Hard disagree, but respect the effort.',
+  'Followed your advice and it worked, cheers!',
+];
+
 function paragraph() {
   return faker.helpers
-    .multiple(() => faker.lorem.paragraph({ min: 1, max: 4 }), {
-      count: { min: 1, max: 3 },
-    })
+    .multiple(
+      () =>
+        faker.helpers
+          .arrayElements([...SENTENCES, faker.hacker.phrase()], { min: 1, max: 3 })
+          .join(' '),
+      { count: { min: 1, max: 3 } },
+    )
     .join('\n\n');
 }
 
 function commentText() {
-  return pick([
-    () => faker.lorem.sentence({ min: 4, max: 18 }),
-    () => faker.lorem.sentences({ min: 1, max: 3 }),
-    () =>
-      pick([
-        'This!',
-        'Great post, thanks for sharing.',
-        'Underrated comment.',
-        'Source?',
-        'Saving this for later.',
-        'Came here to say this.',
-      ]),
-  ])();
+  return chance(0.6)
+    ? pick(COMMENTS)
+    : faker.helpers.arrayElements([...COMMENTS, ...SENTENCES], { min: 1, max: 2 }).join(' ');
 }
 
 // ---------------------------------------------------------------------------
@@ -312,7 +341,10 @@ async function main() {
       const title =
         i < community.titles.length
           ? community.titles[i]!
-          : faker.lorem.sentence({ min: 4, max: 10 }).replace(/\.$/, '?');
+          : `${faker.hacker.ingverb()} ${faker.hacker.adjective()} ${faker.hacker.noun()}: ${pick(['thoughts?', 'my experience', 'a quick guide', 'help needed', 'finally done!'])}`.replace(
+              /^./,
+              (c) => c.toUpperCase(),
+            );
       const imageUrls = [];
       for (let n = 0; n < imageCount; n++) {
         imageUrls.push(
@@ -457,7 +489,7 @@ async function main() {
     data: Array.from({ length: 30 }, (_, i) => ({
       authorId: pick(users).id,
       content: pick([
-        faker.lorem.sentence({ min: 2, max: 12 }),
+        pick(SENTENCES),
         'Anyone around? 👋',
         'Check out the new post in g/algarve!',
         'lol',
