@@ -2,6 +2,15 @@ import type { CookieOptions, Response } from 'express';
 
 export const AUTH_COOKIE_NAME = 'ualgeddit_token';
 
+/**
+ * Over HTTPS the `__Host-` prefix is used: browsers only accept it when it is Secure,
+ * has `Path=/` and no `Domain`, so a sibling subdomain can never set or shadow it.
+ */
+export const SECURE_AUTH_COOKIE_NAME = `__Host-${AUTH_COOKIE_NAME}`;
+
+export const authCookieName = (secure: boolean) =>
+  secure ? SECURE_AUTH_COOKIE_NAME : AUTH_COOKIE_NAME;
+
 export function authCookieOptions(secure: boolean, maxAgeMs?: number): CookieOptions {
   return {
     httpOnly: true,
@@ -13,11 +22,11 @@ export function authCookieOptions(secure: boolean, maxAgeMs?: number): CookieOpt
 }
 
 export function setAuthCookie(res: Response, token: string, secure: boolean, maxAgeMs: number) {
-  res.cookie(AUTH_COOKIE_NAME, token, authCookieOptions(secure, maxAgeMs));
+  res.cookie(authCookieName(secure), token, authCookieOptions(secure, maxAgeMs));
 }
 
 export function clearAuthCookie(res: Response, secure: boolean) {
-  res.clearCookie(AUTH_COOKIE_NAME, authCookieOptions(secure));
+  res.clearCookie(authCookieName(secure), authCookieOptions(secure));
 }
 
 /**
@@ -27,7 +36,7 @@ export function clearAuthCookie(res: Response, secure: boolean) {
 export function extractToken(
   cookies: Record<string, string | undefined> | undefined,
 ): string | null {
-  return cookies?.[AUTH_COOKIE_NAME] || null;
+  return cookies?.[SECURE_AUTH_COOKIE_NAME] || cookies?.[AUTH_COOKIE_NAME] || null;
 }
 
 /** Parses a raw `Cookie` header (used for WebSocket upgrades, which bypass Express). */

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { durationToMs } from '../http/duration.js';
-import { extractToken, parseCookieHeader, AUTH_COOKIE_NAME } from '../http/auth-cookie.js';
+import {
+  AUTH_COOKIE_NAME,
+  authCookieName,
+  extractToken,
+  parseCookieHeader,
+  SECURE_AUTH_COOKIE_NAME,
+} from '../http/auth-cookie.js';
 import { detectImageKind } from './image-signature.js';
 import { escapeLike } from './like.js';
 import { paginate, toSkipTake } from './pagination.js';
@@ -85,6 +91,12 @@ describe('durationToMs', () => {
 });
 
 describe('auth cookie helpers', () => {
+  it('uses the __Host- prefix when cookies are secure', () => {
+    expect(authCookieName(true)).toBe('__Host-ualgeddit_token');
+    expect(authCookieName(false)).toBe('ualgeddit_token');
+    expect(extractToken({ [SECURE_AUTH_COOKIE_NAME]: 'secure' })).toBe('secure');
+  });
+
   it('reads the token from the httpOnly cookie only', () => {
     expect(extractToken({ [AUTH_COOKIE_NAME]: 'cookie' })).toBe('cookie');
     expect(extractToken({ other: 'x' })).toBeNull();
