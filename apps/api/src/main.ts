@@ -16,8 +16,8 @@ async function bootstrap() {
   const server = createServer(app);
   container.chatGateway.attach(server);
 
-  server.listen(env.PORT, () => {
-    logger.info(`API listening on http://localhost:${env.PORT} (docs at /api/docs)`);
+  server.listen(env.API_PORT, () => {
+    logger.info(`API listening on http://localhost:${env.API_PORT} (docs at /api/docs)`);
   });
 
   let shuttingDown = false;
