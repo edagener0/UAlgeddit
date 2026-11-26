@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/field';
 import { errorMessage } from '@/lib/api-client';
+import { safeRedirect } from '@/lib/safe-redirect';
 import { AuthLayout } from './auth-layout';
 import { useCurrentUser, useLogin } from './hooks';
 
@@ -16,7 +17,7 @@ export function LoginPage() {
   const login = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? '/';
+  const from = safeRedirect((location.state as { from?: unknown } | null)?.from);
 
   const {
     register,
