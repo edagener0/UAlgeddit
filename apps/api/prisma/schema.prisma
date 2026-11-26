@@ -1,0 +1,206 @@
+// UAlgeddit database schema (PostgreSQL).
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique @db.VarChar(20)
+  passwordHash String    @map("password_hash") @db.VarChar(100)
+  bio          String?   @db.VarChar(500)
+  birthday     DateTime? @db.Date
+  avatarUrl    String?   @map("avatar_url") @db.VarChar(255)
+  /// Sum of the scores of every post and comment authored by the user.
+  karma        Int       @default(0)
+  /// Incremented on logout / password change to invalidate every issued JWT.
+  tokenVersion Int       @default(0) @map("token_version")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  subgeddits             Subgeddit[]
+  posts                  Post[]
+  comments               Comment[]
+  postVotes              PostVote[]
+  commentVotes           CommentVote[]
+  sentFriendRequests     FriendRequest[] @relation("FriendRequestSender")
+  receivedFriendRequests FriendRequest[] @relation("FriendRequestReceiver")
+  friendshipsA           Friendship[]    @relation("FriendshipUserA")
+  friendshipsB           Friendship[]    @relation("FriendshipUserB")
+  chatMessages           ChatMessage[]
+
+  @@map("users")
+}
+
+model Subgeddit {
+  id          Int      @id @default(autoincrement())
+  /// Case-insensitive unique name (enforced through `nameLower`).
+  name        String   @db.VarChar(21)
+  nameLower   String   @unique @map("name_lower") @db.VarChar(21)
+  description String   @default("") @db.VarChar(500)
+  iconUrl     String?  @map("icon_url") @db.VarChar(255)
+  bannerUrl   String?  @map("banner_url") @db.VarChar(255)
+  ownerId     Int      @map("owner_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  owner User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  posts Post[]
+
+  @@index([ownerId])
+  @@map("subgeddits")
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(300)
+  content      String   @default("") @db.Text
+  subgedditId  Int      @map("subgeddit_id")
+  authorId     Int      @map("author_id")
+  /// Denormalised (upvotes - downvotes), kept in sync inside vote transactions.
+  score        Int      @default(0)
+  /// Reddit-style "hot" rank, recomputed whenever the score changes.
+  hotRank      Float    @default(0) @map("hot_rank")
+  commentCount Int      @default(0) @map("comment_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  subgeddit Subgeddit   @relation(fields: [subgedditId], references: [id], onDelete: Cascade)
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  images    PostImage[]
+  comments  Comment[]
+  votes     PostVote[]
+
+  @@index([subgedditId, createdAt])
+  @@index([authorId])
+  @@index([hotRank])
+  @@index([score])
+  @@index([createdAt])
+  @@map("posts")
+}
+
+model PostImage {
+  id       Int    @id @default(autoincrement())
+  postId   Int    @map("post_id")
+  url      String @db.VarChar(255)
+  position Int
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, position])
+  @@map("post_images")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String    @default("") @db.Text
+  postId    Int       @map("post_id")
+  authorId  Int       @map("author_id")
+  parentId  Int?      @map("parent_id")
+  /// 0 for top-level comments, parent.depth + 1 for replies.
+  depth     Int       @default(0)
+  score     Int       @default(0)
+  /// Soft-delete marker so reply threads keep their shape.
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  post    Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent  Comment?       @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]      @relation("CommentReplies")
+  images  CommentImage[]
+  votes   CommentVote[]
+
+  @@index([postId])
+  @@index([parentId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model CommentImage {
+  id        Int    @id @default(autoincrement())
+  commentId Int    @map("comment_id")
+  url       String @db.VarChar(255)
+  position  Int
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, position])
+  @@map("comment_images")
+}
+
+model PostVote {
+  userId    Int      @map("user_id")
+  postId    Int      @map("post_id")
+  /// 1 (upvote) or -1 (downvote); enforced by a CHECK constraint in the migration.
+  value     Int      @db.SmallInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+  @@index([postId])
+  @@map("post_votes")
+}
+
+model CommentVote {
+  userId    Int      @map("user_id")
+  commentId Int      @map("comment_id")
+  value     Int      @db.SmallInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@id([userId, commentId])
+  @@index([commentId])
+  @@map("comment_votes")
+}
+
+model FriendRequest {
+  fromId    Int      @map("from_id")
+  toId      Int      @map("to_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  from User @relation("FriendRequestSender", fields: [fromId], references: [id], onDelete: Cascade)
+  to   User @relation("FriendRequestReceiver", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@id([fromId, toId])
+  @@index([toId])
+  @@map("friend_requests")
+}
+
+/// Undirected friendship stored once, canonically ordered so that userAId < userBId.
+model Friendship {
+  userAId   Int      @map("user_a_id")
+  userBId   Int      @map("user_b_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userA User @relation("FriendshipUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendshipUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@id([userAId, userBId])
+  @@index([userBId])
+  @@map("friendships")
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.VarChar(1000)
+  authorId  Int      @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("chat_messages")
+}
