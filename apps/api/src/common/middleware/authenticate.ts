@@ -13,7 +13,7 @@ export interface TokenAuthenticator {
  */
 export function optionalAuth(authenticator: TokenAuthenticator): RequestHandler {
   return async (req, _res, next) => {
-    const token = extractToken(req.cookies, req.headers.authorization);
+    const token = extractToken(req.cookies);
     if (token) {
       req.user = (await authenticator.authenticate(token)) ?? undefined;
     }

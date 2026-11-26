@@ -82,5 +82,5 @@ export const errors = {
   429: errorResponse('Too many requests'),
 };
 
-/** Security requirement for authenticated operations (cookie or bearer token). */
-export const authenticated = [{ cookieAuth: [] }, { bearerAuth: [] }];
+/** Security requirement for authenticated operations (httpOnly session cookie). */
+export const authenticated = [{ cookieAuth: [] }];

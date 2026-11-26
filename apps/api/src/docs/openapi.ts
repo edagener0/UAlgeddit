@@ -17,10 +17,9 @@ export function buildOpenApiDocument() {
       title: 'UAlgeddit API',
       version: '2.0.0',
       description:
-        'REST API of UAlgeddit, a Reddit-like community platform. Sign in with `POST /auth/login`; ' +
-        'the browser then sends the httpOnly cookie automatically. Other clients can send the ' +
-        'returned token as `Authorization: Bearer <token>`.',
-      license: { name: 'MIT' },
+        'REST API of UAlgeddit, a Reddit-like community platform. Authentication is cookie-based: ' +
+        '`POST /auth/login` sets an httpOnly, SameSite=Lax session cookie that the browser (and ' +
+        'this page) sends automatically. The token is never exposed to JavaScript.',
     },
     servers: [{ url: '/api' }],
     tags: [
@@ -58,7 +57,6 @@ export function buildOpenApiDocument() {
     components: {
       securitySchemes: {
         cookieAuth: { type: 'apiKey', in: 'cookie', name: AUTH_COOKIE_NAME },
-        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
       },
       schemas,
     },

@@ -20,18 +20,14 @@ export function clearAuthCookie(res: Response, secure: boolean) {
   res.clearCookie(AUTH_COOKIE_NAME, authCookieOptions(secure));
 }
 
-/** Extracts a JWT from the auth cookie or from an `Authorization: Bearer` header. */
+/**
+ * Extracts the session JWT. Authentication is cookie-only: the token lives in an
+ * httpOnly cookie that page scripts cannot read, so `Authorization` headers are ignored.
+ */
 export function extractToken(
   cookies: Record<string, string | undefined> | undefined,
-  authorization: string | undefined,
 ): string | null {
-  const fromCookie = cookies?.[AUTH_COOKIE_NAME];
-  if (fromCookie) return fromCookie;
-  if (authorization?.startsWith('Bearer ')) {
-    const token = authorization.slice('Bearer '.length).trim();
-    return token || null;
-  }
-  return null;
+  return cookies?.[AUTH_COOKIE_NAME] || null;
 }
 
 /** Parses a raw `Cookie` header (used for WebSocket upgrades, which bypass Express). */

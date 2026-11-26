@@ -40,8 +40,7 @@ export interface AuthUser {
   avatarUrl: string | null;
 }
 
+/** The session token is only ever sent as an httpOnly cookie, never in the body. */
 export interface AuthResponse {
   user: AuthUser;
-  /** Also set as an httpOnly cookie; returned for non-browser API clients. */
-  token: string;
 }
