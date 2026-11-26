@@ -1,4 +1,39 @@
-*/node_modules/
-*/dist/
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Uploaded files (local storage driver)
+apps/api/uploads/*
+!apps/api/uploads/.gitkeep
+
+# Legacy SQLite databases
 *.db
-/client/README.md
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Logs
+npm-debug.log*
