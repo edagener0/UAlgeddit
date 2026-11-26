@@ -92,11 +92,21 @@ export class SubgedditsService {
     return record;
   }
 
-  /** Stores the given optional images, keeping their positions (undefined stays undefined). */
-  private async saveOptional(...files: (ImageFile | undefined)[]): Promise<(string | undefined)[]> {
-    const present = files.filter((file): file is ImageFile => file !== undefined);
-    const urls = await this.storage.saveImages(present);
-    let index = 0;
-    return files.map((file) => (file ? urls[index++] : undefined));
+  /**
+   * Stores the optional icon (avatar preset) and banner (banner preset).
+   * All-or-nothing: if the banner is rejected, the already stored icon is removed.
+   */
+  private async saveOptional(
+    icon: ImageFile | undefined,
+    banner: ImageFile | undefined,
+  ): Promise<[string | undefined, string | undefined]> {
+    const [iconUrl] = icon ? await this.storage.saveImages([icon], 'avatar') : [];
+    try {
+      const [bannerUrl] = banner ? await this.storage.saveImages([banner], 'banner') : [];
+      return [iconUrl, bannerUrl];
+    } catch (error) {
+      await this.storage.deleteMany([iconUrl]);
+      throw error;
+    }
   }
 }

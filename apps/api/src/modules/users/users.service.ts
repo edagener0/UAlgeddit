@@ -51,8 +51,14 @@ export class UsersService {
     const current = await this.users.findById(userId);
     if (!current) throw new NotFoundError('User');
 
-    const [url = null] = file ? await this.storage.saveImages([file]) : [];
-    const updated = await this.users.updateAvatar(userId, url);
+    const [url = null] = file ? await this.storage.saveImages([file], 'avatar') : [];
+    let updated;
+    try {
+      updated = await this.users.updateAvatar(userId, url);
+    } catch (error) {
+      await this.storage.deleteMany([url]);
+      throw error;
+    }
     await this.storage.deleteMany([current.avatarUrl]);
     return { id: updated.id, username: updated.username, avatarUrl: updated.avatarUrl };
   }

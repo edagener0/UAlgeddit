@@ -4,6 +4,9 @@ import path from 'node:path';
 import type { Logger } from 'pino';
 import { UnsupportedMediaTypeError } from '../../common/errors/app-error.js';
 import { detectImageKind } from '../../common/utils/image-signature.js';
+import { processImage, type ImagePreset } from './image-processor.js';
+
+export type { ImagePreset } from './image-processor.js';
 
 export interface ImageFile {
   buffer: Buffer;
@@ -12,8 +15,11 @@ export interface ImageFile {
 
 /** Abstraction over where uploaded images live (local disk today, S3 tomorrow). */
 export interface StorageService {
-  /** Validates and stores every image, returning their public URLs in order. All-or-nothing. */
-  saveImages(files: ImageFile[]): Promise<string[]>;
+  /**
+   * Validates, sanitises (re-encodes) and stores every image, returning their public
+   * URLs in order. All-or-nothing: nothing is kept if any image is rejected.
+   */
+  saveImages(files: ImageFile[], preset?: ImagePreset): Promise<string[]>;
   /** Best-effort removal; never throws. */
   deleteMany(urls: (string | null | undefined)[]): Promise<void>;
 }
@@ -29,24 +35,31 @@ export class LocalDiskStorage implements StorageService {
     private readonly logger?: Logger,
   ) {}
 
-  async saveImages(files: ImageFile[]): Promise<string[]> {
-    // Validate everything before touching the disk.
-    const prepared = files.map((file) => {
+  async saveImages(files: ImageFile[], preset: ImagePreset = 'content'): Promise<string[]> {
+    // 1. Cheap magic-byte check first: the client MIME type and file name are never trusted.
+    const kinds = files.map((file) => {
       const kind = detectImageKind(file.buffer);
       if (!kind) {
         throw new UnsupportedMediaTypeError(
           `"${file.originalname ?? 'file'}" is not a valid JPEG, PNG, GIF or WebP image`,
         );
       }
-      return { buffer: file.buffer, name: `${randomUUID()}.${kind}` };
+      return kind;
     });
+
+    // 2. Decode and re-encode everything before touching the disk (sequential: bounded CPU/RAM).
+    const encoded: Buffer[] = [];
+    for (const [index, file] of files.entries()) {
+      encoded.push(await processImage(file.buffer, kinds[index]!, preset));
+    }
 
     this.ready ??= mkdir(this.directory, { recursive: true });
     await this.ready;
 
     const written: string[] = [];
     try {
-      for (const { buffer, name } of prepared) {
+      for (const buffer of encoded) {
+        const name = `${randomUUID()}.webp`;
         await writeFile(path.join(this.directory, name), buffer, { flag: 'wx' });
         written.push(`${PUBLIC_UPLOADS_PATH}/${name}`);
       }
