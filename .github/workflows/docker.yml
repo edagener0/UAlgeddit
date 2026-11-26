@@ -51,6 +51,7 @@ jobs:
     needs: build
     env:
       JWT_SECRET: ci-secret-that-is-long-enough-for-validation-purposes
+      POSTGRES_PASSWORD: ci-database-password
     steps:
       - uses: actions/checkout@v7
       - name: Start the stack

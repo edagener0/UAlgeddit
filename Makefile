@@ -16,15 +16,8 @@ help: ## Show this help
 ##@ Setup
 
 .PHONY: env
-env: ## Create .env files from the examples (with a random JWT secret)
-	@if [ ! -f .env ]; then \
-		sed "s|^JWT_SECRET=.*|JWT_SECRET=$$(openssl rand -base64 48 | tr -d '\n/+=')|" .env.example > .env; \
-		echo "Created .env"; \
-	fi
-	@if [ ! -f apps/api/.env ]; then \
-		sed "s|^JWT_SECRET=.*|JWT_SECRET=$$(openssl rand -base64 48 | tr -d '\n/+=')|" apps/api/.env.example > apps/api/.env; \
-		echo "Created apps/api/.env"; \
-	fi
+env: ## Create .env files with a random JWT secret and database password
+	@./scripts/setup-env.sh
 
 .PHONY: install
 install: env ## Install dependencies and generate the Prisma client
