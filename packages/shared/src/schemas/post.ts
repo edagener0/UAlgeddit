@@ -34,7 +34,8 @@ export interface PostDto {
   title: string;
   content: string;
   createdAt: string;
-  updatedAt: string;
+  /** Set when the author edited the title or body. */
+  editedAt: string | null;
   score: number;
   commentCount: number;
   /** The current user's vote on this post (0 when not voted or anonymous). */

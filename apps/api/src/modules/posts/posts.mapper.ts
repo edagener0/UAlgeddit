@@ -13,7 +13,7 @@ export function toPostDto(record: PostRecord): PostDto {
     title: record.title,
     content: record.content,
     createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
+    editedAt: record.editedAt?.toISOString() ?? null,
     score: record.score,
     commentCount: record.commentCount,
     myVote: toMyVote(record.votes),

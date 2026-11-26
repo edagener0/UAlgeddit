@@ -88,7 +88,7 @@ export const schemas = {
       title: { type: 'string' },
       content: { type: 'string' },
       createdAt: dateTime,
-      updatedAt: dateTime,
+      editedAt: { ...dateTime, type: ['string', 'null'] },
       score: { type: 'integer' },
       commentCount: { type: 'integer' },
       myVote: voteValue,

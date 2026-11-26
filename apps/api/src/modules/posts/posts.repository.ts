@@ -96,7 +96,11 @@ export class PostsRepository {
   }
 
   update(id: number, data: { title?: string; content?: string }, viewerId: number) {
-    return this.db.post.update({ where: { id }, data, include: postInclude(viewerId) });
+    return this.db.post.update({
+      where: { id },
+      data: { ...data, editedAt: new Date() },
+      include: postInclude(viewerId),
+    });
   }
 
   delete(id: number) {

@@ -59,18 +59,20 @@ model Subgeddit {
 }
 
 model Post {
-  id           Int      @id @default(autoincrement())
-  title        String   @db.VarChar(300)
-  content      String   @default("") @db.Text
-  subgedditId  Int      @map("subgeddit_id")
-  authorId     Int      @map("author_id")
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(300)
+  content      String    @default("") @db.Text
+  subgedditId  Int       @map("subgeddit_id")
+  authorId     Int       @map("author_id")
   /// Denormalised (upvotes - downvotes), kept in sync inside vote transactions.
-  score        Int      @default(0)
+  score        Int       @default(0)
   /// Reddit-style "hot" rank, recomputed whenever the score changes.
-  hotRank      Float    @default(0) @map("hot_rank")
-  commentCount Int      @default(0) @map("comment_count")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  hotRank      Float     @default(0) @map("hot_rank")
+  commentCount Int       @default(0) @map("comment_count")
+  /// Set only when the author edits the title or body (votes do not count).
+  editedAt     DateTime? @map("edited_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   subgeddit Subgeddit   @relation(fields: [subgedditId], references: [id], onDelete: Cascade)
   author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
