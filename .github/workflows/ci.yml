@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  HUSKY: 0
+  FORCE_COLOR: 1
+
+jobs:
+  format:
+    name: Format (Prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+
+  lint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate -w @ualgeddit/api
+      - run: npm run typecheck
+
+  test:
+    name: Unit tests (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [shared, api, web]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - if: matrix.workspace == 'api'
+        run: npm run db:generate -w @ualgeddit/api
+      - run: npm run test:coverage -w @ualgeddit/${{ matrix.workspace }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: coverage-${{ matrix.workspace }}
+          path: ${{ matrix.workspace == 'shared' && 'packages' || 'apps' }}/${{ matrix.workspace }}/coverage
+          if-no-files-found: ignore
+          retention-days: 7
+
+  database:
+    name: Migrations & seed (PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: ualgeddit
+          POSTGRES_PASSWORD: ualgeddit
+          POSTGRES_DB: ualgeddit
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ualgeddit"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://ualgeddit:ualgeddit@localhost:5432/ualgeddit?schema=public
+      UPLOAD_DIR: ${{ runner.temp }}/uploads
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate -w @ualgeddit/api
+      - name: Apply migrations
+        run: npm run db:deploy -w @ualgeddit/api
+      - name: Check the schema matches the migrations
+        working-directory: apps/api
+        run: npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
+      - name: Seed
+        run: npm run db:seed -w @ualgeddit/api
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate -w @ualgeddit/api
+      - run: npm run build
