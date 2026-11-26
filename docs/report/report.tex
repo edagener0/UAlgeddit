@@ -271,13 +271,24 @@ Chat & \texttt{GET /chat/messages}, WebSocket \texttt{/api/chat/ws} \\
         only allows configured origins, and \texttt{helmet} sets security headers.
   \item Rate limits protect the whole API, the authentication endpoints and the chat.
   \item The configuration is validated at start-up; the API refuses to start with a weak secret.
+  \item Failed logins are also limited per account, writes per user, and chat sockets per user; open
+        sockets are closed as soon as their session is revoked.
+  \item Votes lock the target row inside their transaction, so concurrent requests cannot count a vote twice.
+  \item Changing the password or deleting the account requires the current password; deleting an account
+        removes all of its content and repairs the scores and karma it contributed to.
 \end{itemize}
+
+A security audit (documented in \texttt{docs/security.md}) also hardened the infrastructure: dependencies with
+known vulnerabilities were upgraded (\texttt{npm audit} reports none), PostgreSQL is only reachable from the
+host's loopback interface with a generated password, containers run without capabilities on read-only file
+systems, and CI runs CodeQL and a dependency audit gate.
 
 \subsection{Image uploads}
 
 Uploads are received in memory by Multer with limits on size (5~MiB), count and MIME type. The storage service
 then detects the real format from the file's magic bytes (JPEG, PNG, GIF, WebP), rejecting disguised SVG or HTML,
-stores the files under random UUID names and returns their public URLs. Saving is all-or-nothing, and if the
+and re-encodes every image to WebP with \texttt{sharp}: metadata such as EXIF GPS coordinates is stripped, the
+decoded size is capped at 40 megapixels and the dimensions are bounded. Files are stored under random UUID names. Saving is all-or-nothing, and if the
 database insert fails the stored files are removed. Images are served with a sandboxing Content Security Policy.
 
 \subsection{Real-time chat}

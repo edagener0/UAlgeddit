@@ -38,17 +38,18 @@
 
 ## Features
 
-| Area              | What you get                                                                                                     |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Communities**   | Create _subgeddits_ with an icon, a banner and a description; owners can edit or delete them.                    |
-| **Posts**         | Title, text and up to **10 images** per post, shown in a swipeable gallery with a full-screen lightbox.          |
-| **Feeds**         | Home, community and profile feeds sorted by **Hot / New / Top**, infinite scroll and full-text search.           |
-| **Discussions**   | Threaded comments (nested replies), up to 4 images per comment, collapsible threads, soft delete.                |
-| **Votes & karma** | Up/down votes on posts and comments with optimistic UI; karma is updated transactionally.                        |
-| **Social**        | Profiles with avatar, bio and birthday; friend requests (send, accept, decline, cancel) and friend lists.        |
-| **Chat**          | Global real-time chat over WebSockets with history, presence and automatic reconnection.                         |
-| **UX**            | Fully responsive, accessible, light/dark themes with an animated switch, English / Português / Français.         |
-| **Security**      | httpOnly SameSite cookies, token revocation, rate limiting, CSP, origin checks, image validation by magic bytes. |
+| Area              | What you get                                                                                                                                  |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Communities**   | Create _subgeddits_ with an icon, a banner and a description; owners can edit or delete them.                                                 |
+| **Posts**         | Title, text and up to **10 images** per post, shown in a swipeable gallery with a full-screen lightbox.                                       |
+| **Feeds**         | Home, community and profile feeds sorted by **Hot / New / Top**, infinite scroll and full-text search.                                        |
+| **Discussions**   | Threaded comments (nested replies), up to 4 images per comment, collapsible threads, soft delete.                                             |
+| **Votes & karma** | Up/down votes on posts and comments with optimistic UI; karma is updated transactionally.                                                     |
+| **Social**        | Profiles with avatar, bio and birthday; friend requests (send, accept, decline, cancel) and friend lists.                                     |
+| **Account**       | Change password (signs out other devices) and permanently delete the account with all of its content.                                         |
+| **Chat**          | Global real-time chat over WebSockets with history, presence and automatic reconnection.                                                      |
+| **UX**            | Fully responsive, accessible, light/dark themes with an animated switch, English / Português / Français.                                      |
+| **Security**      | httpOnly `__Host-` cookies, session revocation, layered rate limits, image re-encoding (EXIF/GPS stripped), CSP, hardened containers, CodeQL. |
 
 ## Tech stack
 
@@ -160,6 +161,7 @@ GitHub Actions run on every push and pull request:
 - **CI**: Prettier, ESLint, TypeScript, unit tests (shared / API / web, coverage uploaded as artifacts), migrations
   and seed against a real PostgreSQL service, production build.
 - **Docker**: builds both images and smoke-tests the full Compose stack through nginx.
+- **CodeQL** static analysis and a dependency audit gate (`npm audit --audit-level=high`).
 - **Dependabot**: weekly npm updates, monthly GitHub Actions and base-image updates.
 
 ## Configuration
@@ -188,6 +190,7 @@ Docker Compose reads the root `.env` (see [`.env.example`](.env.example)); the A
 | [Database](docs/database.md)             | ER diagram (draw.io), relational model, constraints, indexes |
 | [API](docs/api.md)                       | Endpoints, authentication, errors, pagination, WebSocket     |
 | [Development](docs/development.md)       | Workflow, scripts, migrations, testing, commit conventions   |
+| [Security](docs/security.md)             | Security model, audit findings and recommendations           |
 | [Deployment](docs/deployment.md)         | Docker images, configuration, production checklist           |
 | [Project report](docs/report/report.pdf) | Full academic report (LaTeX source in `docs/report`)         |
 

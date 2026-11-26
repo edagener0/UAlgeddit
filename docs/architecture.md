@@ -102,6 +102,8 @@ sequenceDiagram
 ```
 
 - The client-provided MIME type and file name are never trusted; SVG and HTML are rejected.
+- Every image is decoded and re-encoded to WebP with `sharp`: metadata (EXIF/GPS) is stripped, orientation
+  applied, dimensions bounded (content 2048 px, avatars/icons 512 px, banners 1920×640) and decoding capped at 40 MP.
 - Files get random UUID names; the storage only deletes names it generated (no path traversal).
 - `/uploads` is served with `Content-Security-Policy: default-src 'none'; sandbox`, `nosniff` and long caching.
 - `StorageService` is an interface: the local-disk implementation could be replaced by S3 without touching services.
@@ -165,6 +167,8 @@ src/
   skip link, `aria-live` chat.
 
 ## Security summary
+
+See [security.md](security.md) for the full list of controls and the audit findings.
 
 | Threat                  | Mitigation                                                                      |
 | ----------------------- | ------------------------------------------------------------------------------- |

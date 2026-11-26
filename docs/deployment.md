@@ -8,7 +8,8 @@ The production stack is defined in [`docker-compose.yml`](../docker-compose.yml)
 | `api`   | built from `apps/api/Dockerfile` | Runs `prisma migrate deploy` on start, non-root, health-checked |
 | `web`   | built from `apps/web/Dockerfile` | Unprivileged nginx: static SPA + reverse proxy on port 8080     |
 
-Start-up order is enforced with health checks: `db` → `api` → `web`. Uploaded images are kept in the `uploads` volume.
+Containers run as non-root users with read-only root filesystems, no Linux capabilities, `no-new-privileges`
+and memory/PID limits. Start-up order is enforced with health checks: `db` → `api` → `web`. Uploaded images are kept in the `uploads` volume.
 
 ```bash
 make up      # build and start (creates .env with a random JWT secret on first run)
@@ -27,11 +28,12 @@ make down    # stop (volumes are kept)
 
 ## Production checklist
 
+- [ ] Run `make env` (random `JWT_SECRET` and `POSTGRES_PASSWORD`, files with `0600` permissions).
 - [ ] Serve the site over **HTTPS** (for example a TLS-terminating proxy or load balancer in front of `web`) and set
-      `COOKIE_SECURE=true`.
+      `COOKIE_SECURE=true` (the cookie then uses the `__Host-` prefix); enable HSTS in `apps/web/nginx.conf`.
 - [ ] Set `PUBLIC_URL` to the public origin (it becomes the CORS / WebSocket allow-list).
 - [ ] Use a strong, private `JWT_SECRET` (`openssl rand -base64 48`) and strong PostgreSQL credentials.
-- [ ] Do not publish the PostgreSQL port (remove `ports` from the `db` service).
+- [ ] PostgreSQL is only published on `127.0.0.1`; remove the `ports` entry entirely if no host tool needs it.
 - [ ] Adjust `TRUST_PROXY` to the number of proxies in front of the API so rate limiting sees real client IPs.
 - [ ] Back up the `pgdata` and `uploads` volumes.
 - [ ] Keep `API_DOCS_ENABLED` unset or `false` (Swagger UI is disabled in production by default).
