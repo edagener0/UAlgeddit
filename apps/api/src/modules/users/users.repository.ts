@@ -15,15 +15,13 @@ export class UsersRepository {
     });
   }
 
-  /** Case-insensitive lookup, so "Alice" and "alice" are the same account. */
+  /** Case-insensitive lookup on the unique, indexed `username_lower` column. */
   findByUsername(username: string) {
-    return this.db.user.findFirst({
-      where: { username: { equals: username, mode: 'insensitive' } },
-    });
+    return this.db.user.findUnique({ where: { usernameLower: username.toLowerCase() } });
   }
 
   create(data: { username: string; passwordHash: string }) {
-    return this.db.user.create({ data });
+    return this.db.user.create({ data: { ...data, usernameLower: data.username.toLowerCase() } });
   }
 
   updateProfile(id: number, data: { bio?: string | null; birthday?: Date | null }) {

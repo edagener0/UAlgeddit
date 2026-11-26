@@ -2,7 +2,7 @@
 // Docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 // The connection URL is configured in prisma.config.ts (Prisma 7).
@@ -11,18 +11,20 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  username     String    @unique @db.VarChar(20)
-  passwordHash String    @map("password_hash") @db.VarChar(100)
-  bio          String?   @db.VarChar(500)
-  birthday     DateTime? @db.Date
-  avatarUrl    String?   @map("avatar_url") @db.VarChar(255)
+  id            Int       @id @default(autoincrement())
+  username      String    @unique @db.VarChar(20)
+  /// Lower-cased username: enforces case-insensitive uniqueness ("Alice" == "alice").
+  usernameLower String    @unique @map("username_lower") @db.VarChar(20)
+  passwordHash  String    @map("password_hash") @db.VarChar(100)
+  bio           String?   @db.VarChar(500)
+  birthday      DateTime? @db.Date
+  avatarUrl     String?   @map("avatar_url") @db.VarChar(255)
   /// Sum of the scores of every post and comment authored by the user.
-  karma        Int       @default(0)
+  karma         Int       @default(0)
   /// Incremented on logout / password change to invalidate every issued JWT.
-  tokenVersion Int       @default(0) @map("token_version")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  tokenVersion  Int       @default(0) @map("token_version")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   subgeddits             Subgeddit[]
   posts                  Post[]

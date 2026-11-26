@@ -302,6 +302,7 @@ async function main() {
       await prisma.user.create({
         data: {
           username,
+          usernameLower: username.toLowerCase(),
           passwordHash,
           bio: chance(0.85) ? faker.person.bio() : null,
           birthday: chance(0.7) ? faker.date.birthdate({ min: 18, max: 45, mode: 'age' }) : null,
